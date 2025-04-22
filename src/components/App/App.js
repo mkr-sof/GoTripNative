@@ -1,61 +1,67 @@
 import React, { useEffect } from "react";
 import { View, StyleSheet } from "react-native";
 // import { useNavigationState } from "@react-navigation/native";
-// import Header from "../layouts/Header/Header";
-// import Content from "../layouts/Content/Content";
-// import Sidebar from "../layouts/Sidebar/Sidebar";
-// import { createTestUsers, createTestPosts } from "../../services/storageService";
-// import { getAllPosts } from "../../services/postService";
-// import { getUsers } from "../../services/userService";
-// import store from "../../store/configureStore";
+import Header from "../layouts/Header/Header";
+import Content from "../layouts/Content/Content";
+import Sidebar from "../layouts/Sidebar/Sidebar";
+import { createTestUsers, createTestPosts } from "../../services/storageService";
+import { getAllPosts } from "../../services/postService";
+import { getUsers } from "../../services/userService";
+import store from "../../store/configureStore";
 import Navigation from "../../Navigation";
-// import { Provider } from "react-redux";
+import { Provider } from "react-redux";
 
 function App() {
-  // const navigationState = useNavigationState((state) => state);
-  // const currentRoute = navigationState?.routes[navigationState.index]?.name;
-  // const hideSidebarRoutes = ["Login", "Signup", "ForgotPassword", "EditProfile"];
-  // const isAuthRoute = hideSidebarRoutes.includes(currentRoute);
+  //  const navigationState = useNavigationState((state) => state);
+  //  const currentRoute = navigationState?.routes[navigationState.index]?.name;
+  //  const hideSidebarRoutes = ["Login", "Signup", "ForgotPassword", "EditProfile"];
+  //  const isAuthRoute = hideSidebarRoutes.includes(currentRoute);
 
-  // useEffect(() => {
-  //   const initializeData = async () => {
-  //     const existingUsers = await getUsers();
-  //     if (!existingUsers || existingUsers.length === 0) {
-  //       createTestUsers();
-  //       console.log("Test users created!");
-  //     }
+  useEffect(() => {
+    const initializeData = async () => {
+      const existingUsers = await getUsers();
+      if (!existingUsers || existingUsers.length === 0) {
+        createTestUsers();
+        console.log("Test users created!");
+      }
 
-  //     const existingPosts = await getAllPosts();
-  //     console.log("Existing posts:", existingPosts);
-  //     if (!existingPosts || existingPosts.length === 0) {
-  //       createTestPosts();
-  //       console.log("Test posts created!");
-  //     }
-  //   };
-  //   initializeData();
-  // }, []);
-
+      const existingPosts = await getAllPosts();
+      console.log("Existing posts:", existingPosts);
+      if (!existingPosts || existingPosts.length === 0) {
+        createTestPosts();
+        console.log("Test posts created!");
+      }
+    };
+    initializeData();
+  }, []);
   return (
     <>
-      <Navigation/>
-     {/*<Provider store={store}>
-    
-   <View style={styles.container}>
-   
-   <Header />
-      <View style={styles.layout}>
-        {!isAuthRoute && <Sidebar style={styles.sidebar} />}
-        <View style={isAuthRoute ? styles.authContainer : styles.mainContent}>
-          <Content style={styles.content} />
-        </View>
-      </View>
-    </View> 
-    </Provider>*/}
-    </>
-     
-    
+      
+      <Provider store={store}>
+<Navigation />
+        <View style={styles.container}>
 
+          {/* <Header /> */}
+          <View style={styles.layout}>
+            {/* {!isAuthRoute && <Sidebar style={styles.sidebar} />}
+        <View style={isAuthRoute ? styles.authContainer : styles.mainContent}> */}
+            {/* <Content style={styles.content} /> */}
+          </View>
+        </View>
+        {/* </View>  */}
+      </Provider>
+    </>
   );
+  // return (
+  //   <>
+  //     <Navigation />
+  //     <Provider store={store}>
+  //       <View style={styles.container}>
+  //         <Content style={styles.content} />
+  //       </View>
+  //     </Provider>
+  //   </>
+  // );
 }
 
 const styles = StyleSheet.create({

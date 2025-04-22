@@ -7,6 +7,7 @@ import CreatePost from "../../features/Feed/CreatePost/CreatePost";
 import Description from "../../common/Description/Description";
 import Button from "../../common/Button/Button";
 import Popup from "../../common/Popup/Popup";
+import Content from "../../layouts/Content/Content";
 import { setPosts, filterPosts } from "../../../store/modules/postsSlice";
 import Posts from "../../features/Feed/Posts/Posts";
 
@@ -41,10 +42,11 @@ function Feed() {
     };
 
     return (
+        <Content>
         <ScrollView contentContainerStyle={styles.feedContainer}>
             {user && (
                 <View style={styles.createHeader}>
-                    <Text style={styles.headerText}>You can create your own posts</Text>
+                    <Text style={styles.headerText}>Create your own posts</Text>
                     <Button
                         text="Create"
                         onPress={() => setIsCreateOpen(true)}
@@ -69,6 +71,7 @@ function Feed() {
                 </Popup>
             )}
         </ScrollView>
+        </Content>
     );
 }
 

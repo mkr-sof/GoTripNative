@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, TouchableWithoutFeedback, Keyboard } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 const categories = ["Adventure", "Nature", "City Trips", "Beach"];
@@ -20,28 +20,35 @@ function Navbar() {
     };
 
     return (
-        <View style={styles.navbar}>
-            <TouchableOpacity onPress={() => navigation.navigate("Home")}>
-                <Text style={styles.navItem}>Home</Text>
-            </TouchableOpacity>
-            <View style={styles.dropdown}>
-                <TouchableOpacity onPress={toggleDropdown}>
-                    <Text style={[styles.navItem, styles.dropdownButton]}>Categories</Text>
+        <TouchableWithoutFeedback
+            onPress={() => {
+                if (isDropdownOpen) setIsDropdownOpen(false);
+                Keyboard.dismiss(); 
+            }}
+        >
+            <View style={styles.navbar}>
+                <TouchableOpacity onPress={() => navigation.navigate("Home")}>
+                    <Text style={styles.navItem}>Home</Text>
                 </TouchableOpacity>
-                {isDropdownOpen && (
-                    <View style={styles.dropdownMenu}>
-                        {categories.map((category, index) => (
-                            <TouchableOpacity
-                                key={index}
-                                onPress={() => handleCategorySelect(category)}
-                            >
-                                <Text style={styles.dropdownItem}>{category}</Text>
-                            </TouchableOpacity>
-                        ))}
-                    </View>
-                )}
+                <View style={styles.dropdown}>
+                    <TouchableOpacity onPress={toggleDropdown}>
+                        <Text style={[styles.navItem, styles.dropdownButton]}>Categories</Text>
+                    </TouchableOpacity>
+                    {isDropdownOpen && (
+                        <View style={styles.dropdownMenu}>
+                            {categories.map((category, index) => (
+                                <TouchableOpacity
+                                    key={index}
+                                    onPress={() => handleCategorySelect(category)}
+                                >
+                                    <Text style={styles.dropdownItem}>{category}</Text>
+                                </TouchableOpacity>
+                            ))}
+                        </View>
+                    )}
+                </View>
             </View>
-        </View>
+        </TouchableWithoutFeedback>
     );
 }
 
@@ -49,13 +56,12 @@ const styles = StyleSheet.create({
     navbar: {
         flexDirection: "row",
         alignItems: "center",
-        gap: 40,
+        gap: 20,
     },
     navItem: {
         color: "#c5c2c2",
         fontWeight: "bold",
         fontSize: 14,
-        textDecorationLine: "none",
     },
     dropdown: {
         position: "relative",
@@ -78,12 +84,15 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.2,
         shadowRadius: 4,
         zIndex: 1000,
+        elevation: 10,
+        // width: 160,
     },
     dropdownItem: {
         padding: 10,
         fontSize: 14,
         color: "#333",
         fontWeight: "normal",
+        width: "100%",
     },
 });
 

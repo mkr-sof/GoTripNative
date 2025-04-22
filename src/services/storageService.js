@@ -16,7 +16,7 @@ import beach2 from "../assets/images/beach/beach2.jpg";
 import beach3 from "../assets/images/beach/beach3.jpg";
 import beach4 from "../assets/images/beach/beach4.jpg";
 
-export const saveDataToAsyncStorage = async (key, data) => {
+export const saveDataToLocalStorage = async (key, data) => {
     try {
         await AsyncStorage.setItem(key, JSON.stringify(data));
     } catch (error) {
@@ -24,7 +24,7 @@ export const saveDataToAsyncStorage = async (key, data) => {
     }
 };
 
-export const getDataFromAsyncStorage = async (key) => {
+export const getDataFromLocalStorage = async (key) => {
     try {
         const data = await AsyncStorage.getItem(key);
         return data ? JSON.parse(data) : null;
@@ -34,7 +34,7 @@ export const getDataFromAsyncStorage = async (key) => {
     }
 };
 
-export const removeDataFromAsyncStorage = async (key) => {
+export const removeDataFromLocalStorage = async (key) => {
     try {
         await AsyncStorage.removeItem(key);
     } catch (error) {
@@ -42,7 +42,7 @@ export const removeDataFromAsyncStorage = async (key) => {
     }
 };
 
-export const clearAsyncStorage = async () => {
+export const clearLocalStorage = async () => {
     try {
         await AsyncStorage.clear();
     } catch (error) {
@@ -75,12 +75,12 @@ export const createTestUsers = async () => {
         },
     ];
 
-    await saveDataToAsyncStorage("users", testUsers);
+    await saveDataToLocalStorage("users", testUsers);
 };
 
 export const createTestPosts = async () => {
-    const users = (await getDataFromAsyncStorage("users")) || [];
-    const existingPosts = (await getDataFromAsyncStorage("allPosts")) || [];
+    const users = (await getDataFromLocalStorage("users")) || [];
+    const existingPosts = (await getDataFromLocalStorage("allPosts")) || [];
 
     if (existingPosts.length > 0) {
         console.log("Test posts already exist.");
@@ -122,6 +122,6 @@ export const createTestPosts = async () => {
         })
     );
 
-    await saveDataToAsyncStorage("allPosts", testPosts);
+    await saveDataToLocalStorage("allPosts", testPosts);
     console.log("Test posts created!");
 };
