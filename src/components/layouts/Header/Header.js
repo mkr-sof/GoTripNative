@@ -7,7 +7,7 @@ import Logo from "../../common/Logo/Logo";
 import Navbar from "../Navbar/Navbar";
 import Avatar from "../../common/Avatar/Avatar";
 import { loginUser } from "../../../services/authService";
-import { getDataFromLocalStorage } from "../../../services/storageService";
+import { getDataFromStorage } from "../../../services/storageService";
 import { setProfile } from "../../../store/modules/authSlice";
 import { setPosts } from "../../../store/modules/postsSlice";
 
@@ -23,21 +23,49 @@ function Header() {
     useEffect(() => {
         if (route.name !== "Login" && route.name !== "Signup") {
             dispatch(setProfile());
-            const allPosts = getDataFromLocalStorage("allPosts") || [];
+            const allPosts = getDataFromStorage("allPosts") || [];
             dispatch(setPosts(allPosts));
         }
     }, [route.name]);
 
-    const handleSearchChange = (text) => {
-        setSearchQuery(text);
+    // const handleSearchChange = (text) => {
+    //     setSearchQuery(text);
+    // };
+
+    // const handleSearchSubmit = () => {
+    //     if (searchQuery.trim() !== "") {
+    //         navigation.navigate("Search", { query: searchQuery.trim() });
+    //     }
+    // };
+    const handleSearchChange = (event) => {
+        const query = event.target.value;
+        setSearchQuery(query);
+        if (query.trim() === "") {
+            dispatch(resetFilter());
+        } else {
+            dispatch(searchPosts(query));
+        }
     };
 
     const handleSearchSubmit = () => {
         if (searchQuery.trim() !== "") {
-            navigation.navigate("Search", { query: searchQuery.trim() });
+            const allPosts = getDataFromStorage("allPosts") || [];
+            const matchingPosts = allPosts.filter((post) =>
+                post.title.toLowerCase().includes(searchQuery.trim().toLowerCase())
+            );
+    
+            if (matchingPosts.length === 1) {
+                navigation.navigate("Post", { postId: matchingPosts[0].id });
+            } else {
+                dispatch(filterPosts({
+                    filter: "search", 
+                    sortOrder: "newest",
+                    query: searchQuery.trim()
+                }));
+                navigation.navigate("Search", { query: searchQuery.trim() });
+            }
         }
     };
-
     return (
         <View style={styles.headerContainer}>
             <TouchableOpacity onPress={() => navigation.navigate("Home")} style={styles.logo}>
@@ -48,7 +76,7 @@ function Header() {
                 <Navbar />
             </View>
 
-            <View style={styles.rightSection}>
+            {/* <View style={styles.rightSection}>
                 {isSearchOpen ? (
                     <TextInput
                         ref={searchRef}
@@ -75,7 +103,7 @@ function Header() {
                         <Avatar />
                     </TouchableOpacity>
                 )}
-            </View>
+            </View> */}
         </View>
     );
 }

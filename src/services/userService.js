@@ -1,15 +1,17 @@
-import { getDataFromLocalStorage } from "../services/storageService";
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getDataFromStorage } from "./storageService";
 export const getCurrentUser = () => {
-    const user = getDataFromLocalStorage("profile"); 
+    const user = getDataFromStorage("profile"); 
     if (user) {
         return user;
     }else{
-      const sessionUser = sessionStorage.getItem("profile");
+      const sessionUser = AsyncStorage.getItem("profile");
     return sessionUser ? JSON.parse(sessionUser) : null;  
     }
     
 };
 
 export const getUsers = () => {
-    return getDataFromLocalStorage("users") || [];
+    return getDataFromStorage("users") || [];
 }

@@ -1,5 +1,9 @@
-import { saveDataToLocalStorage, removeDataFromLocalStorage } from '../services/storageService';
-import { getCurrentUser, getUsers } from "services/userService"
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { saveDataToStorage, removeDataFromStorage } from './services/storageService';
+import {  getUsers } from "./services/userService";
+import { setProfile } from "../store/modules/authSlice";
+
+
 export const signupUser = async (userData) => {
     try {
     const {name, email, password} = userData;
@@ -10,9 +14,16 @@ export const signupUser = async (userData) => {
     if(existingUser){
         return {success: false, message: "User alredy exists!"};
     }
-    const newUser = { id: Date.now(), name, email, password };
-    saveDataToLocalStorage("users", [...users, newUser]);
-    await loginUser(newUser);
+    const newUser = { 
+        id: Date.now(), 
+        name, 
+        email, 
+        password, 
+        posts: [],
+        avatar: null,
+    };
+    saveDataToStorage("users", [...users, newUser]);
+    await profile(newUser);
     // console.log(newUser)
     return { success: true };
 } catch (error) {
@@ -20,7 +31,7 @@ export const signupUser = async (userData) => {
 }
 }
 
-export const loginUser = async (userData) => {
+export const profile = async (userData, dispatch) => {
 try{
     const {email, password, rememberMe} = userData;
     const users = await getUsers();
@@ -33,12 +44,10 @@ try{
     if(user.password !== password){
         return {success: false, message: "Invalid email or password"};
     }
-    if(rememberMe){
-        saveDataToLocalStorage("profile", user);
-    }else{
-        sessionStorage.setItem("profile", JSON.stringify(user));
-    }
-
+   
+    saveDataToStorage("profile", user);
+    
+    dispatch(setProfile({ ...user, rememberMe }));
     return {success: true};
 }catch(error){
     return {success: false, message: "Something went wrong!"}
@@ -60,8 +69,7 @@ export const resetPassword = async (email) => {
 
 export const logoutUser = async () => {
     try {
-        removeDataFromLocalStorage("profile");
-        sessionStorage.removeItem("profile"); 
+        removeDataFromStorage("profile");
     } catch (error) {
         console.error("Error during logout", error);
     }

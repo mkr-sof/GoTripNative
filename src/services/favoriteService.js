@@ -1,7 +1,7 @@
-import { getDataFromLocalStorage, saveDataToLocalStorage } from '../services/storageService';
+import { getDataFromStorage, saveDataToStorage } from './storageService';
 
 export const getFavorites = () => {
-    return getDataFromLocalStorage("favorites") || [];
+    return getDataFromStorage("favorites") || [];
 }
 
 // export const toggleFavorite = async (postId) => {
@@ -14,7 +14,7 @@ export const getFavorites = () => {
 //         updatedFavorites = [...favorites, postId]; 
 //     }
 
-//     saveDataToLocalStorage("favorites", updatedFavorites);
+//     saveDataToStorage("favorites", updatedFavorites);
 
 //     return updatedFavorites;
 // }

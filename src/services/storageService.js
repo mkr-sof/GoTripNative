@@ -1,4 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import MMKV from 'react-native-mmkv';
+
 import adventure1 from "../assets/images/adventure/adventure1.jpg";
 import adventure2 from "../assets/images/adventure/adventure2.jpg";
 import adventure3 from "../assets/images/adventure/adventure3.jpg";
@@ -16,41 +18,44 @@ import beach2 from "../assets/images/beach/beach2.jpg";
 import beach3 from "../assets/images/beach/beach3.jpg";
 import beach4 from "../assets/images/beach/beach4.jpg";
 
-export const saveDataToLocalStorage = async (key, data) => {
-    try {
-        await AsyncStorage.setItem(key, JSON.stringify(data));
-    } catch (error) {
-        console.error(`Error saving ${key} to AsyncStorage:`, error);
-    }
-};
+const storage = new MMKV();
 
-export const getDataFromLocalStorage = async (key) => {
+export const getDataFromStorage = (key) => {
     try {
-        const data = await AsyncStorage.getItem(key);
-        return data ? JSON.parse(data) : null;
+        const data = storage.getString(key); 
+        return data ? JSON.parse(data) : null; 
     } catch (error) {
-        console.error(`Error reading ${key} from AsyncStorage:`, error);
+        console.error('Error getting data from storage:', error);
         return null;
     }
 };
 
-export const removeDataFromLocalStorage = async (key) => {
+
+export const saveDataToStorage = (key, data) => {
     try {
-        await AsyncStorage.removeItem(key);
+        storage.set(key, JSON.stringify(data));
     } catch (error) {
-        console.error(`Error removing ${key} from AsyncStorage:`, error);
+        console.error('Error saving data to storage:', error);
     }
 };
 
-export const clearLocalStorage = async () => {
+
+export const removeDataFromStorage = (key) => {
     try {
-        await AsyncStorage.clear();
+        storage.delete(key);
     } catch (error) {
-        console.error("Error clearing AsyncStorage:", error);
+        console.error('Error removing data from storage:', error);
     }
 };
 
-export const createTestUsers = async () => {
+export const clearLocalStorage = () => {
+    try {
+        storage.clear();
+    } catch (error) {
+        console.error("Error clearing storage:", error);
+    }
+};
+export const createTestUsers = () => {
     const testUsers = [
         {
             id: 1,
@@ -58,6 +63,7 @@ export const createTestUsers = async () => {
             email: "alice@example.com",
             password: "test123",
             avatar: "https://randomuser.me/api/portraits/women/1.jpg",
+            posts: []
         },
         {
             id: 2,
@@ -65,6 +71,7 @@ export const createTestUsers = async () => {
             email: "bob@example.com",
             password: "test123",
             avatar: "https://randomuser.me/api/portraits/men/2.jpg",
+            posts: []
         },
         {
             id: 3,
@@ -72,15 +79,17 @@ export const createTestUsers = async () => {
             email: "charlie@example.com",
             password: "test123",
             avatar: "https://randomuser.me/api/portraits/men/3.jpg",
-        },
+            posts: []
+        }
     ];
 
-    await saveDataToLocalStorage("users", testUsers);
+    saveDataToStorage("users", testUsers);
 };
 
-export const createTestPosts = async () => {
-    const users = (await getDataFromLocalStorage("users")) || [];
-    const existingPosts = (await getDataFromLocalStorage("allPosts")) || [];
+
+export const createTestPosts = () => {
+    const users = getDataFromStorage("users") || [];
+    const existingPosts = getDataFromStorage("allPosts") || [];
 
     if (existingPosts.length > 0) {
         console.log("Test posts already exist.");
@@ -92,36 +101,57 @@ export const createTestPosts = async () => {
         "An amazing experience in the wild!",
         "Exploring the beauty of nature.",
         "A fantastic city adventure.",
-        "Relaxing by the beach under the sun.",
+        "Relaxing by the beach under the sun."
     ];
 
     const categoryImages = {
-        Adventure: [adventure1, adventure2, adventure3, adventure4],
-        Nature: [nature1, nature2, nature3, nature4],
-        "City Trips": [cityTrips1, cityTrips2, cityTrips3, cityTrips4],
-        Beach: [beach1, beach2, beach3, beach4],
-    };
+    Adventure: [
+        adventure1,
+        adventure2,
+        adventure3,
+        adventure4
+    ],
+    Nature: [
+        nature1,
+        nature2,
+        nature3,
+        nature4
+    ],
+    "City Trips": [
+        cityTrips1,
+        cityTrips2,
+        cityTrips3,
+        cityTrips4
+    ],
+    Beach: [
+        beach1,
+        beach2,
+        beach3,
+        beach4
+    ]
+};
+const testPosts = users.flatMap(user =>
+    categories.map((category, index) => {
+        const randomImage = categoryImages[category][Math.floor(Math.random() * 4)];
+        const newPost = {
+            id: uuidv4(),
+            authorId: user.id,
+            authorName: user.name,
+            title: `Test Post ${index + 1} by ${user.name}`,
+            description: sampleDescriptions[index],
+            category: category,  
+            image: randomImage,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            isFavorite: false,
+        };
+        user.posts = user.posts || []; 
+        user.posts.push(newPost);
 
-    const testPosts = users.flatMap((user) =>
-        Array.from({ length: 4 }, (_, index) => {
-            const category = categories[index];
-            const randomImage =
-                categoryImages[category][Math.floor(Math.random() * 4)];
-            return {
-                id: Date.now() + Math.random(),
-                authorId: user.id,
-                authorName: user.name,
-                title: `Test Post ${index + 1} by ${user.name}`,
-                description: sampleDescriptions[index],
-                category: categories[index],
-                image: randomImage,
-                created_at: new Date().toISOString(),
-                updated_at: new Date().toISOString(),
-                isFavorite: false,
-            };
-        })
-    );
-
-    await saveDataToLocalStorage("allPosts", testPosts);
+        return newPost;
+    })
+);
+saveDataToStorage("users", users);
+saveDataToStorage("allPosts", testPosts);
     console.log("Test posts created!");
 };

@@ -1,11 +1,12 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createSlice } from '@reduxjs/toolkit';
-import { getCurrentUser, getUsers } from "../../services/userService";
-import { getDataFromLocalStorage, saveDataToLocalStorage, removeDataFromLocalStorage } from "../../services/storageService";
+import { getCurrentUser } from "../../services/userService";
+import { getDataFromStorage, saveDataToStorage, removeDataFromStorage } from "../../services/storageService";
 
-const initialUsers = getDataFromLocalStorage("users") || [];
+const initialUsers = getDataFromStorage("users") || [];
 
 const initialState = {
-    user: getDataFromLocalStorage("profile") || null,
+    user: getDataFromStorage("profile") || null,
     users: initialUsers,
 };
 
@@ -16,27 +17,38 @@ const authSlice = createSlice({
         setProfile: (state, action) => {
             const user = action.payload ? action.payload : getCurrentUser();
             state.user = user;
+            const rememberMe = action.payload?.rememberMe;
 
+            if (rememberMe) {
+                saveDataToStorage("profile", state.user);
+            } else {
+                AsyncStorage.setItem("profile", JSON.stringify(state.user));
+            }
             if(action.payload){
             state.users = state.users.filter(user => user.id !== action.payload.id);
             state.users.push(action.payload);
 
-            saveDataToLocalStorage("users", state.users);
-            saveDataToLocalStorage("profile", state.user);
+            saveDataToStorage("users", state.users);
             }
         },
         logout: (state) => {
             state.user = null;
-            state.users = getDataFromLocalStorage("users") || [];
-            removeDataFromLocalStorage("profile");
-            sessionStorage.removeItem("profile");
+            state.users = getDataFromStorage("users") || [];
+            removeDataFromStorage("profile");
         },
-        // setUsers: (state, action) => {
-        //     state.users = action.payload;
-        //     saveDataToLocalStorage("users", state.users);
-        // },
+        setAvatar: (state, action) => {
+            if (state.user) {
+                state.user.avatar = action.payload;
+                saveDataToStorage("profile", state.user);
+            }
+        },
+        setUsers: (state, action) => {
+            const users = action.payload;
+            state.users = users;
+            saveDataToStorage("users", users);
+        },
     },
 });
 
-export const { setProfile, logout, setUsers } = authSlice.actions;
+export const { setProfile, logout, setAvatar, setUsers } = authSlice.actions;
 export default authSlice.reducer;

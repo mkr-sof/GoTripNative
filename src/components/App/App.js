@@ -12,11 +12,6 @@ import Navigation from "../../Navigation";
 import { Provider } from "react-redux";
 
 function App() {
-  //  const navigationState = useNavigationState((state) => state);
-  //  const currentRoute = navigationState?.routes[navigationState.index]?.name;
-  //  const hideSidebarRoutes = ["Login", "Signup", "ForgotPassword", "EditProfile"];
-  //  const isAuthRoute = hideSidebarRoutes.includes(currentRoute);
-
   useEffect(() => {
     const initializeData = async () => {
       const existingUsers = await getUsers();
@@ -36,32 +31,12 @@ function App() {
   }, []);
   return (
     <>
-      
-      <Provider store={store}>
-<Navigation />
-        <View style={styles.container}>
 
-          {/* <Header /> */}
-          <View style={styles.layout}>
-            {/* {!isAuthRoute && <Sidebar style={styles.sidebar} />}
-        <View style={isAuthRoute ? styles.authContainer : styles.mainContent}> */}
-            {/* <Content style={styles.content} /> */}
-          </View>
-        </View>
-        {/* </View>  */}
+      <Provider store={store}>
+        <Navigation />
       </Provider>
     </>
   );
-  // return (
-  //   <>
-  //     <Navigation />
-  //     <Provider store={store}>
-  //       <View style={styles.container}>
-  //         <Content style={styles.content} />
-  //       </View>
-  //     </Provider>
-  //   </>
-  // );
 }
 
 const styles = StyleSheet.create({

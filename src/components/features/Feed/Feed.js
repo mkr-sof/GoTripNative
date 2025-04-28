@@ -20,7 +20,18 @@ function Feed() {
     const sortOrder = useSelector((state) => state.posts.sortOrder);
 
     const [isCreateOpen, setIsCreateOpen] = useState(false);
-
+    useEffect(() => {
+        const fetchPosts = async () => {
+          const fetchedPosts = await getDataFromLocalStorage('allPosts');
+          if (fetchedPosts) {
+            setPosts(fetchedPosts);
+          } else {
+            console.log("No posts found in AsyncStorage.");
+          }
+        };
+    
+        fetchPosts();
+      }, [dispatch]);
     useEffect(() => {
         const allPosts = getDataFromLocalStorage("allPosts") || [];
         dispatch(setPosts(allPosts));
