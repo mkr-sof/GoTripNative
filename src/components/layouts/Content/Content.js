@@ -11,7 +11,7 @@ import Header from "../Header/Header";
 function Content({ children }) {
   return (
     <View style={styles.container}>
-      <Header />
+      {/* <Header /> */}
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {children}
       </ScrollView>

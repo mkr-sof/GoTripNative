@@ -1,10 +1,10 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { storage } from "./storageService";
 import { saveDataToStorage, removeDataFromStorage } from './services/storageService';
 import {  getUsers } from "./services/userService";
-import { setProfile } from "../store/modules/authSlice";
+import { setProfile, setUsers } from "../store/modules/authSlice";
 
 
-export const signupUser = async (userData) => {
+export const signupUser = async (userData, dispatch) => {
     try {
     const {name, email, password} = userData;
     const users = await getUsers();
@@ -23,7 +23,9 @@ export const signupUser = async (userData) => {
         avatar: null,
     };
     saveDataToStorage("users", [...users, newUser]);
-    await profile(newUser);
+    saveDataToStorage("profile", newUser);
+    dispatch(setUsers([...users, newUser]));
+    await profile({ email, password }, dispatch);
     // console.log(newUser)
     return { success: true };
 } catch (error) {

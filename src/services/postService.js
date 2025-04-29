@@ -1,14 +1,11 @@
-import { saveDataToStorage, getDataFromStorage } from './favoriteService';
+import { saveDataToStorage, getDataFromStorage } from './storageService';
 
 export const createPost = async (post) => {
     const allPosts = await getDataFromStorage("allPosts") || [];
-    console.log("allPosts before:", allPosts);
     const updatedPosts = [...allPosts, post];
-    console.log("allPosts after:", updatedPosts);
     saveDataToStorage("allPosts", updatedPosts);
 
     const users = await getDataFromStorage("users") || [];
-    console.log("users before:", users);
     const updatedUsers = users.map(user => {
         if (user.id === post.authorId) {
             const updatedUserPosts = [...(user.posts || []), post];
@@ -16,13 +13,12 @@ export const createPost = async (post) => {
         }
         return user;
     });
-    console.log("users after:", updatedUsers);
     saveDataToStorage("users", updatedUsers);
     return { updatedPosts, updatedUsers };
 }
 
-export const getAllPosts = async () => {
-    return await getDataFromStorage("allPosts") || [];
+export const getAllPosts = () => {
+    return getDataFromStorage("allPosts") || [];
 }
 
 
@@ -34,16 +30,16 @@ export const getAllPosts = async () => {
 //     saveDataToLocalStorage("allPosts", allPosts);
 // }
 
-export const updatePost = async (postId, updatedData) => {
+export const updatePost = (postId, updatedData) => {
 
-    let allPosts = await getDataFromStorage("allPosts") || [];
+    let allPosts = getDataFromStorage("allPosts") || [];
     allPosts = allPosts.map(post =>
         post.id === postId ? { ...post, ...updatedData, updated_at: new Date().toISOString() } : post
     );
     saveDataToStorage("allPosts", allPosts);
 
     
-    let users = await getDataFromStorage("users") || [];
+    let users = getDataFromStorage("users") || [];
     const updatedUsers = users.map(user => {
         if (user.posts) {
             const updatedUserPosts = user.posts.map(post =>
@@ -64,13 +60,13 @@ export const updatePost = async (postId, updatedData) => {
 //     return allPosts;
 // }
 
-export const removePost = async (postId) => {
+export const removePost = (postId) => {
 
-    let allPosts = await getDataFromStorage("allPosts") || [];
+    let allPosts = getDataFromStorage("allPosts") || [];
     allPosts = allPosts.filter(post => post.id !== postId);
     saveDataToStorage("allPosts", allPosts);
 
-    let users = await getDataFromStorage("users") || [];
+    let users = getDataFromStorage("users") || [];
     const updatedUsers = users.map(user => {
         if (user.posts) {
             const updatedUserPosts = user.posts.filter(post => post.id !== postId);

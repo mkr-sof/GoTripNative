@@ -6,7 +6,7 @@ import { getDataFromStorage, saveDataToStorage } from "../../services/storageSer
 const initialFavorites = getDataFromStorage("favorites") || [];
 
 const initialState = {
-    users: getUsers(),
+    users: [],
     posts: [],
     filteredPosts: [],
     favorites: initialFavorites,
@@ -22,25 +22,8 @@ const postsSlice = createSlice({
         setPosts: (state, action) => {
             console.log("Action dispatched:", action);
             const posts = action.payload;
-            // state.posts = posts;
-            // state.filteredPosts = [...posts];
-
-
-            if (Array.isArray(posts)) {
-                state.posts = posts;
-                state.filteredPosts = [...posts];
-            } else {
-                // Handle the case when posts are not an array
-                console.error("Expected an array but received:", posts);
-                state.posts = [];
-                state.filteredPosts = [];
-            }
-            // state.posts = action.payload;
-            // state.byId = action.payload.reduce((acc, post) => {
-            //     acc[post.id] = post;
-            //     return acc;
-            // }, {});
-            // state.filteredPosts = action.payload;
+            state.posts = posts;
+            state.filteredPosts = [...posts];
         },
         updatePost: (state, action) => {
             const updatedPost = action.payload;
@@ -52,15 +35,18 @@ const postsSlice = createSlice({
         },
         createPost: (state, action) => {
             const newPost = action.payload;
-            state.posts.unshift(newPost);
-            state.filteredPosts = [...state.posts];
-            state.users = state.users.map(user => {
+            const newPosts = [newPost, ...state.posts];
+            
+            const newUsers = state.users.map(user => {
                 if (user.id === newPost.authorId) {
                   const updatedUserPosts = user.posts ? [...user.posts, newPost] : [newPost];
                   return { ...user, posts: updatedUserPosts };
                 }
                 return user;
               });
+              state.users = newUsers;
+              state.posts = newPosts;
+  
               saveDataToStorage("allPosts", state.posts);
               saveDataToStorage('users', state.users);
             console.log("Post added to Redux state and localStorage:", state.posts);
@@ -100,7 +86,7 @@ const postsSlice = createSlice({
             }
 
             if (query) {
-                filtered = filtered.updatedPostfilter(post =>
+                filtered = filtered.filter(post =>
                     post.title.toLowerCase().includes(query.toLowerCase())
                 );
             }

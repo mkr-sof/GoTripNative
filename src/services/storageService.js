@@ -1,6 +1,5 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import MMKV from 'react-native-mmkv';
-
+import { MMKV } from 'react-native-mmkv';
+import uuid from "react-native-uuid";
 import adventure1 from "../assets/images/adventure/adventure1.jpg";
 import adventure2 from "../assets/images/adventure/adventure2.jpg";
 import adventure3 from "../assets/images/adventure/adventure3.jpg";
@@ -18,12 +17,12 @@ import beach2 from "../assets/images/beach/beach2.jpg";
 import beach3 from "../assets/images/beach/beach3.jpg";
 import beach4 from "../assets/images/beach/beach4.jpg";
 
-const storage = new MMKV();
+export const storage = new MMKV();
 
 export const getDataFromStorage = (key) => {
     try {
-        const data = storage.getString(key); 
-        return data ? JSON.parse(data) : null; 
+        const data = storage.getString(key);
+        return data ? JSON.parse(data) : null;
     } catch (error) {
         console.error('Error getting data from storage:', error);
         return null;
@@ -84,6 +83,7 @@ export const createTestUsers = () => {
     ];
 
     saveDataToStorage("users", testUsers);
+    return testUsers;
 };
 
 
@@ -93,7 +93,7 @@ export const createTestPosts = () => {
 
     if (existingPosts.length > 0) {
         console.log("Test posts already exist.");
-        return;
+        return existingPosts;
     }
 
     const categories = ["Adventure", "Nature", "City Trips", "Beach"];
@@ -103,55 +103,68 @@ export const createTestPosts = () => {
         "A fantastic city adventure.",
         "Relaxing by the beach under the sun."
     ];
-
-    const categoryImages = {
-    Adventure: [
-        adventure1,
-        adventure2,
-        adventure3,
-        adventure4
-    ],
-    Nature: [
-        nature1,
-        nature2,
-        nature3,
-        nature4
-    ],
-    "City Trips": [
-        cityTrips1,
-        cityTrips2,
-        cityTrips3,
-        cityTrips4
-    ],
-    Beach: [
-        beach1,
-        beach2,
-        beach3,
-        beach4
-    ]
-};
-const testPosts = users.flatMap(user =>
-    categories.map((category, index) => {
-        const randomImage = categoryImages[category][Math.floor(Math.random() * 4)];
-        const newPost = {
-            id: uuidv4(),
-            authorId: user.id,
-            authorName: user.name,
-            title: `Test Post ${index + 1} by ${user.name}`,
-            description: sampleDescriptions[index],
-            category: category,  
-            image: randomImage,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-            isFavorite: false,
+    const getImageKey = (category, index) => {
+        const categoryKeyMap = {
+            Adventure: "adventure",
+            Nature: "nature",
+            "City Trips": "citytrips",
+            Beach: "beach",
         };
-        user.posts = user.posts || []; 
-        user.posts.push(newPost);
+        return `${categoryKeyMap[category]}${index + 1}`; // example: adventure2
+    };
+    const categoryImages = {
+        Adventure: [
+            adventure1,
+            adventure2,
+            adventure3,
+            adventure4
+        ],
+        Nature: [
+            nature1,
+            nature2,
+            nature3,
+            nature4
+        ],
+        "City Trips": [
+            cityTrips1,
+            cityTrips2,
+            cityTrips3,
+            cityTrips4
+        ],
+        Beach: [
+            beach1,
+            beach2,
+            beach3,
+            beach4
+        ]
+    };
 
-        return newPost;
-    })
-);
-saveDataToStorage("users", users);
-saveDataToStorage("allPosts", testPosts);
+    const testPosts = users.flatMap(user =>
+        categories.map((category, index) => {
+            // const randomImage = categoryImages[category][Math.floor(Math.random() * 4)];
+            const imageList = categoryImages[category];
+            const randomIndex = Math.floor(Math.random() * imageList.length);
+            const imageKey = getImageKey(category, randomIndex);
+            const newPost = {
+                id: uuid.v4(),
+                authorId: user.id,
+                authorName: user.name,
+                title: `Test Post ${index + 1} by ${user.name}`,
+                description: sampleDescriptions[index],
+                category: category,
+                image: imageKey,
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString(),
+                isFavorite: false,
+            };
+            user.posts = user.posts || [];
+            user.posts.push(newPost);
+
+            return newPost;
+        })
+    );
+    saveDataToStorage("users", users);
+    saveDataToStorage("allPosts", testPosts);
     console.log("Test posts created!");
+    return testPosts;
 };

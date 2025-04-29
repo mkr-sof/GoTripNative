@@ -1,118 +1,220 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
-import Filters from "../../common/Filters/Filters";
-import { getDataFromLocalStorage } from "../../../services/storageService";
-import CreatePost from "../../features/Feed/CreatePost/CreatePost";
-import Description from "../../common/Description/Description";
-import Button from "../../common/Button/Button";
-import Popup from "../../common/Popup/Popup";
-import Content from "../../layouts/Content/Content";
-import { setPosts, filterPosts } from "../../../store/modules/postsSlice";
-import Posts from "../../features/Feed/Posts/Posts";
+
+
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setPosts } from "../../../store/modules/postsSlice";
+import { setUsers, setProfile } from "../../../store/modules/authSlice";
+import { getAllPosts } from "../../../services/postService";
+import { getUsers } from "../../../services/userService";
+import { store } from "../../../store/configureStore";
+
+import adventure1 from "../../../assets/images/adventure/adventure1.jpg";
+import adventure2 from "../../../assets/images/adventure/adventure2.jpg";
+import adventure3 from "../../../assets/images/adventure/adventure3.jpg";
+import adventure4 from "../../../assets/images/adventure/adventure4.jpg";
+import nature1 from "../../../assets/images/nature/nature1.jpg";
+import nature2 from "../../../assets/images/nature/nature2.jpg";
+import nature3 from "../../../assets/images/nature/nature3.jpg";
+import nature4 from "../../../assets/images/nature/nature4.jpg";
+import cityTrips1 from "../../../assets/images/cityTrips/cityTrips1.jpg";
+import cityTrips2 from "../../../assets/images/cityTrips/cityTrips2.jpg";
+import cityTrips3 from "../../../assets/images/cityTrips/cityTrips3.jpg";
+import cityTrips4 from "../../../assets/images/cityTrips/cityTrips4.jpg";
+import beach1 from "../../../assets/images/beach/beach1.jpg";
+import beach2 from "../../../assets/images/beach/beach2.jpg";
+import beach3 from "../../../assets/images/beach/beach3.jpg";
+import beach4 from "../../../assets/images/beach/beach4.jpg";
+
+import {
+    View,
+    Text,
+    FlatList,
+    Image,
+    StyleSheet
+} from "react-native";
+import {
+    createTestPosts,
+    createTestUsers,
+    clearLocalStorage,
+    getDataFromStorage,
+    saveDataToStorage,
+    storage
+} from "../../../services/storageService";
 
 function Feed() {
-    const dispatch = useDispatch();
-    const posts = useSelector((state) => state.posts.posts);
-    const filteredPosts = useSelector((state) => state.posts.filteredPosts);
-    const filter = useSelector((state) => state.posts.filter);
-    const user = useSelector((state) => state.auth.user);
-    const sortOrder = useSelector((state) => state.posts.sortOrder);
+    const imageMap = {
+        adventure1,
+        adventure2,
+        adventure3,
+        adventure4,
+        nature1,
+        nature2,
+        nature3,
+        nature4,
+        citytrips1: cityTrips1,
+        citytrips2: cityTrips2,
+        citytrips3: cityTrips3,
+        citytrips4: cityTrips4,
+        beach1,
+        beach2,
+        beach3,
+        beach4,
+      };
+      
 
-    const [isCreateOpen, setIsCreateOpen] = useState(false);
-    useEffect(() => {
-        const fetchPosts = async () => {
-          const fetchedPosts = await getDataFromLocalStorage('allPosts');
-          if (fetchedPosts) {
-            setPosts(fetchedPosts);
-          } else {
-            console.log("No posts found in AsyncStorage.");
-          }
-        };
-    
-        fetchPosts();
-      }, [dispatch]);
-    useEffect(() => {
-        const allPosts = getDataFromLocalStorage("allPosts") || [];
-        dispatch(setPosts(allPosts));
-    }, [dispatch]);
-
-    useEffect(() => {
-        if (posts.length > 0) {
-            dispatch(filterPosts({ filter, sortOrder, userId: user?.id }));
+    const mockPosts = [
+        {
+            id: "1",
+            title: "Sunset Adventure",
+            description: "A beautiful hike during sunset.",
+            image: "https://picsum.photos/id/1018/400/300",
+            authorName: "Alice Johnson",
+            category: "Adventure"
+        },
+        {
+            id: "2",
+            title: "City Lights",
+            description: "Exploring downtown at night.",
+            image: "https://picsum.photos/id/1015/400/300",
+            authorName: "Bob Smith",
+            category: "City Trips"
         }
-    }, [posts, filter, sortOrder, dispatch, user?.id]);
+    ];
 
-    const handleFilterChange = (filter, sortOrder) => {
-        dispatch(filterPosts({ filter, sortOrder, userId: user?.id }));
-    };
+    const posts = useSelector((state) => state.posts.posts);
+    const dispatch = useDispatch();
+    useEffect(() => {
+        // clearLocalStorage();
+        const initializeData = () => {
+            
+            const savedProfile = storage.getString("profile");
+            if (savedProfile) {
+                const parsed = JSON.parse(savedProfile);
+                dispatch(setProfile(parsed));
+                console.log("User is logged in:", parsed.email);
+            }
 
-    const handleNewPost = (filter, sortOrder, updatedPosts) => {
-        dispatch(setPosts(updatedPosts));
-        dispatch(filterPosts({ filter, sortOrder, userId: user?.id }));
-    };
+            let users = getUsers();
+            console.log("Existing users:", users);
+            if (!users || users.length === 0) {
+                users = createTestUsers();
+                saveDataToStorage("users", users);
+                dispatch(setUsers(users));
+                console.log("Test users created!");
+            } else {
+                dispatch(setUsers(users));
+                console.log("Loaded users from storage:", users);
+            }
+           let posts = getAllPosts();
+            console.log("Existing posts:", posts);
+            // let existingPosts = getAllPosts();
+            if (!posts.length || posts.length === 0) {
+                posts = createTestPosts();
+                console.log("Test posts created!", posts);
+                saveDataToStorage("allPosts", posts);
+                dispatch(setPosts(posts));
+
+                posts = getAllPosts();
+                console.log("Test posts created!", posts);
+            } else {
+                dispatch(setPosts(posts));
+                console.log("Loaded posts from storage:", posts);
+            }
+        };
+
+        initializeData();
+    }, [dispatch]);
+    // useEffect(() => {
+    //     const initializePosts = () => {
+    //       // 1) Try to read from MMKV
+    //       let stored = getDataFromStorage("allPosts") || [];
+
+    //       if (!stored.length) {
+    //         // 2) Nothing in storage? write the mock data
+    //         saveDataToStorage("allPosts", mockPosts);
+    //         dispatch(setPosts(mockPosts));
+    //         console.log("Mock posts saved to storage");
+
+    //         // 3) Now *re-read* directly from MMKV to verify
+    //         stored = getDataFromStorage("allPosts") || [];
+    //         console.log("Read back from storage:", stored);
+    //       } else {
+    //         dispatch(setPosts(stored));
+    //         console.log("Loaded posts from storage:", stored);
+    //       }
+
+    //       // 4) Finally set your component state
+    //       setPosts(stored);
+    //     };
+
+    //     initializePosts();
+    //   }, [dispatch]);
+
+    const renderItem = ({ item }) => (
+        <View style={styles.card}>
+            <Image source={imageMap[item.image]} style={styles.image} />
+            <Text style={styles.title}>{item.title}</Text>
+            <Text style={styles.author}>by {item.authorName}</Text>
+            <Text style={styles.description}>{item.description}</Text>
+            <Text style={styles.category}>{item.category}</Text>
+        </View>
+    );
 
     return (
-        <Content>
-        <ScrollView contentContainerStyle={styles.feedContainer}>
-            {user && (
-                <View style={styles.createHeader}>
-                    <Text style={styles.headerText}>Create your own posts</Text>
-                    <Button
-                        text="Create"
-                        onPress={() => setIsCreateOpen(true)}
-                        style={styles.createTrigger}
-                    />
-                </View>
-            )}
-            {posts.length > 0 && <Filters onFilterChange={handleFilterChange} />}
-            {(filteredPosts || []).length > 0 ? (
-                <Posts posts={filteredPosts} />
-            ) : (
-                <Description>There are no cards in the system yet.</Description>
-            )}
-            {isCreateOpen && (
-                <Popup visible={isCreateOpen} onClose={() => setIsCreateOpen(false)}>
-                    <CreatePost
-                        onPostCreated={(newPost) => {
-                            setIsCreateOpen(false);
-                            handleNewPost(filter, sortOrder, [newPost, ...posts]);
-                        }}
-                    />
-                </Popup>
-            )}
-        </ScrollView>
-        </Content>
+        <FlatList
+            data={posts}
+            keyExtractor={(item) => item.id}
+            renderItem={renderItem}
+            ListEmptyComponent={
+                <Text style={styles.empty}>No posts found.</Text>
+            }
+            contentContainerStyle={
+                posts.length === 0 && styles.emptyContainer
+            }
+        />
     );
-}
+};
 
 const styles = StyleSheet.create({
-    feedContainer: {
-        flexGrow: 1,
-        backgroundColor: "#2f3031",
-        borderRadius: 8,
-        padding: 20,
-        width: "100%",
-    },
-    createHeader: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-        backgroundColor: "#3a3b3c",
-        padding: 12,
-        borderRadius: 8,
-        marginBottom: 20,
-    },
-    headerText: {
-        color: "white",
-        fontSize: 18,
-        fontWeight: "600",
-    },
-    createTrigger: {
-        backgroundColor: "#007bff",
+    card: {
+        margin: 10,
         padding: 10,
         borderRadius: 8,
+        backgroundColor: "#fff",
+        elevation: 2
     },
+    image: {
+        width: "100%",
+        height: 200,
+        borderRadius: 8,
+        marginBottom: 10
+    },
+    title: {
+        fontSize: 18,
+        fontWeight: "bold"
+    },
+    author: {
+        marginTop: 5,
+        fontStyle: "italic",
+        color: "#555"
+    },
+    description: {
+        marginVertical: 5
+    },
+    category: {
+        fontSize: 14,
+        color: "#888",
+        fontStyle: "italic"
+    },
+    empty: {
+        textAlign: "center",
+        fontSize: 16,
+        marginTop: 50
+    },
+    emptyContainer: {
+        flex: 1,
+        justifyContent: "center"
+    }
 });
 
 export default Feed;

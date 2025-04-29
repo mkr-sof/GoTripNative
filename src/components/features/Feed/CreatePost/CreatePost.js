@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { useDispatch } from "react-redux";
-import { v4 as uuidv4 } from "uuid";
+import uuid from "react-native-uuid";
 import InputField from "../../../common/InputField/InputField";
 import Button from "../../../common/Button/Button";
 import SelectField from "../../../common/SelectField/SelectField";
@@ -32,7 +32,7 @@ function CreatePost({
         const user = getCurrentUser();
 
         const updatedPost = {
-            id: isEditing ? initialPostId : uuidv4(),
+            id: isEditing ? initialPostId : uuid.v4(),
             authorName: user?.name || "Guest",
             title,
             description,

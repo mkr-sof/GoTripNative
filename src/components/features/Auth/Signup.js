@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import { signupUser } from "../../../services/authService";
 import Error from "../../common/Error/Error";
@@ -6,6 +7,7 @@ import InputField from "../../common/InputField/InputField";
 import Button from "../../common/Button/Button";
 
 function Signup({ navigation }) {
+    const dispatch = useDispatch();
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -20,7 +22,7 @@ function Signup({ navigation }) {
 
         try {
             const userData = { name, email, password };
-            const response = await signupUser(userData);
+            const response = await signupUser(userData, dispatch);
             if (response.success) {
                 navigation.navigate("Profile");
             } else {
@@ -29,6 +31,7 @@ function Signup({ navigation }) {
         } catch (error) {
             setError(error.message);
         }
+
     };
 
     return (

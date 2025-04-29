@@ -51,7 +51,7 @@ function BottomTabNavigator() {
         >
             <Tab.Screen name="Feed" component={Feed} />
             <Tab.Screen name="Search" component={SearchInput} />
-            <Tab.Screen name="CreatePost" component={CreatePost} />
+            {/* <Tab.Screen name="CreatePost" component={CreatePost} /> */}
             <Tab.Screen name="Profile" component={Profile} />
         </Tab.Navigator>
     );

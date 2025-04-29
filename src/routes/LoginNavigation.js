@@ -19,10 +19,10 @@ function LoginNavigation() {
       <Stack.Screen name="Main" 
       // component={Feed}
       component={BottomTabNavigator} 
-        // options={{
-        //   header: () => <Header />
-        // }} 
-        options={{ headerShown: false }} 
+        options={{
+          header: () => <Header />
+        }} 
+        // options={{ headerShown: false }} 
         />
          <Stack.Screen name="Profile" component={Profile} />
       {/* <Stack.Screen name="hello" component={Hello} />  */}
@@ -39,7 +39,6 @@ function LoginNavigation() {
 export default LoginNavigation;
 
 
-// const Hello = () => {
 //   return(
 //     <View style={{height: 50, width:59, backgroundColor:'red'}}/>
 //   )

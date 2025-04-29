@@ -1,14 +1,12 @@
 import React from "react";
 import { View, TextInput, StyleSheet } from "react-native";
-import { MaterialIcons } from "react-native-vector-icons";
+import { Ionicons } from "react-native-vector-icons/Ionicons";
 
-class SearchInput extends React.Component {
-    render() {
-        const { searchInputValue, onBlur, onKeyDown, onChange, placeholder } = this.props;
-
+function SearchInput({ searchInputValue, onBlur, onKeyDown, onChange, placeholder }) {
+    
         return (
             <View style={styles.searchBox}>
-                <MaterialIcons name="search" style={styles.searchIcon} />
+                <Ionicons name="search" style={styles.searchIcon} />
                 <TextInput
                     style={styles.searchInput}
                     value={searchInputValue}
@@ -20,7 +18,7 @@ class SearchInput extends React.Component {
                 />
             </View>
         );
-    }
+
 }
 
 const styles = StyleSheet.create({
