@@ -50,7 +50,7 @@ export const removeDataFromStorage = (key) => {
 
 export const clearLocalStorage = () => {
     try {
-        storage.clear();
+        storage.clearAll();
     } catch (error) {
         console.error("Error clearing storage:", error);
     }

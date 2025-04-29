@@ -19,11 +19,11 @@ const authSlice = createSlice({
             state.user = user;
             const rememberMe = action.payload?.rememberMe;
 
-            if (rememberMe) {
+            // if (rememberMe) {
                 saveDataToStorage("profile", state.user);
-            } else {
-                AsyncStorage.setItem("profile", JSON.stringify(state.user));
-            }
+            // } else {
+            //     AsyncStorage.setItem("profile", JSON.stringify(state.user));
+            // }
             if(action.payload){
             state.users = state.users.filter(user => user.id !== action.payload.id);
             state.users.push(action.payload);
