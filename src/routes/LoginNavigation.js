@@ -7,9 +7,9 @@ import Profile from "../components/features/Profile/Profile";
 import BottomTabNavigator from "../components/layouts/BottomTabNavigator/BottomTabNavigator";
 import Logo from "../components/common/Logo/Logo";
 import Header from "../components/layouts/Header/Header";
-// import NotFound from "../components/features/NotFound/NotFound";
-// import PostDetails from "../components/features/Feed/Posts/PostDetails/PostDetails";
-// import CategoryPage from "../components/features/Feed/Posts/CategoryPage/CategoryPage";
+import NotFound from "../components/features/NotFound/NotFound";
+import PostDetails from "../components/features/Feed/Posts/PostDetails/PostDetails";
+import CategoryPage from "../components/features/Feed/Posts/CategoryPage/CategoryPage";
 
 const Stack = createNativeStackNavigator();
 
@@ -24,22 +24,12 @@ function LoginNavigation() {
         }} 
         // options={{ headerShown: false }} 
         />
-         <Stack.Screen name="Profile" component={Profile} />
-      {/* <Stack.Screen name="hello" component={Hello} />  */}
-      {/* 
-        
-       
+        <Stack.Screen name="Profile" component={Profile} />
         <Stack.Screen name="PostDetails" component={PostDetails} />
         <Stack.Screen name="CategoryPage" component={CategoryPage} />
-        <Stack.Screen name="NotFound" component={NotFound} /> */}
+        <Stack.Screen name="NotFound" component={NotFound} />
     </Stack.Navigator>
   );
 }
 
 export default LoginNavigation;
-
-
-//   return(
-//     <View style={{height: 50, width:59, backgroundColor:'red'}}/>
-//   )
-// }

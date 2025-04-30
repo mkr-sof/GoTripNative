@@ -16,7 +16,8 @@ const styles = StyleSheet.create({
     logoText: {
         fontSize: 24,
         fontWeight: "bold",
-        color: "#fff",
+        // color: "#fff",
+        color: "#db5f5f",
     },
 });
 

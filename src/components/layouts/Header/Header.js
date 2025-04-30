@@ -168,11 +168,13 @@
 import React, { useEffect, useState } from "react";
 import { View, TextInput, TouchableOpacity, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { useDispatch } from "react-redux";
-import { storage } from "../../../services/storageService";
+import { useDispatch, useSelector } from "react-redux";
 import { createTestPosts, createTestUsers } from "../../../services/storageService";
-import { setProfile } from "../../../store/modules/authSlice";
+import { setUsers, setProfile } from "../../../store/modules/authSlice";
 import { setPosts } from "../../../store/modules/postsSlice";
+import { getAllPosts } from "../../../services/postService";
+import { getUsers } from "../../../services/userService";
+import { saveDataToStorage, clearLocalStorage, getDataFromStorage, storage } from "../../../services/storageService";
 import Logo from "../../common/Logo/Logo";
 import Navbar from "../Navbar/Navbar";
 import Avatar from "../../common/Avatar/Avatar";
@@ -185,9 +187,11 @@ function Header() {
     const [isSearchOpen, setIsSearchOpen] = useState(false);
 
     // Test data creation logic moved here
+    const posts = useSelector((state) => state.posts.posts);
     useEffect(() => {
-        const initializeData = async () => {
-            // Check if profile exists in storage
+        // clearLocalStorage();
+        const initializeData = () => {
+            
             const savedProfile = storage.getString("profile");
             if (savedProfile) {
                 const parsed = JSON.parse(savedProfile);
@@ -195,27 +199,37 @@ function Header() {
                 console.log("User is logged in:", parsed.email);
             }
 
-            // Check if users exist, create test users if none exist
-            const existingUsers = await getUsers();
-            if (!existingUsers || existingUsers.length === 0) {
-                const users = createTestUsers();
+            let users = getUsers();
+            console.log("Existing users:", users);
+            if (!users || users.length === 0) {
+                users = createTestUsers();
+                saveDataToStorage("users", users);
                 dispatch(setUsers(users));
                 console.log("Test users created!");
-            }
-
-            // Check if posts exist, create test posts if none exist
-            const existingPosts = await getAllPosts();
-            if (!existingPosts || existingPosts.length === 0) {
-                const posts = createTestPosts();
-                dispatch(setPosts(posts));
-                console.log("Test posts created!");
             } else {
-                dispatch(setPosts(existingPosts));
+                dispatch(setUsers(users));
+                console.log("Loaded users from storage:", users);
+            }
+           let posts = getAllPosts();
+            console.log("Existing posts:", posts);
+            
+            if (!posts.length || posts.length === 0) {
+                posts = createTestPosts();
+                console.log("Test posts created!", posts);
+                saveDataToStorage("allPosts", posts);
+                dispatch(setPosts(posts));
+
+                posts = getAllPosts();
+                console.log("Test posts created!", posts);
+            } else {
+                dispatch(setPosts(posts));
+                console.log("Loaded posts from storage:", posts);
             }
         };
 
         initializeData();
-    }, []);
+    }, [dispatch]);
+
 
     const handleSearchChange = (event) => {
         setSearchQuery(event.target.value);
