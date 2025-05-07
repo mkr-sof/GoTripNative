@@ -17,22 +17,22 @@ import beach3 from "../assets/images/beach/beach3.jpg";
 import beach4 from "../assets/images/beach/beach4.jpg";
 
 export const imageMap = {
-    adventure1,
-    adventure2,
-    adventure3,
-    adventure4,
-    nature1,
-    nature2,
-    nature3,
-    nature4,
-    citytrips1: cityTrips1,
-    citytrips2: cityTrips2,
-    citytrips3: cityTrips3,
-    citytrips4: cityTrips4,
-    beach1,
-    beach2,
-    beach3,
-    beach4,
+    1: adventure1,
+    2: adventure2,
+    3: adventure3,
+    4: adventure4,
+    5: nature1,
+    6: nature2,
+    7: nature3,
+    8: nature4,
+    9: cityTrips1,
+    10: cityTrips2,
+    11: cityTrips3,
+    12: cityTrips4,
+    13: beach1,
+    14: beach2,
+    15: beach3,
+    16: beach4,
   };
 
 export const mockPosts = [

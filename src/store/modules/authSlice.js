@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createSlice } from '@reduxjs/toolkit';
 import { getCurrentUser } from "../../services/userService";
 import { getDataFromStorage, saveDataToStorage, removeDataFromStorage } from "../../services/storageService";
@@ -19,11 +18,9 @@ const authSlice = createSlice({
             state.user = user;
             const rememberMe = action.payload?.rememberMe;
 
-            // if (rememberMe) {
+            if (rememberMe) {
                 saveDataToStorage("profile", state.user);
-            // } else {
-            //     AsyncStorage.setItem("profile", JSON.stringify(state.user));
-            // }
+            }
             if(action.payload){
             state.users = state.users.filter(user => user.id !== action.payload.id);
             state.users.push(action.payload);
@@ -43,9 +40,8 @@ const authSlice = createSlice({
             }
         },
         setUsers: (state, action) => {
-            const users = action.payload;
-            state.users = users;
-            saveDataToStorage("users", users);
+            state.users = action.payload;
+            saveDataToStorage("users", state.users);
         },
     },
 });

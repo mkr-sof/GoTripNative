@@ -52,7 +52,6 @@ react {
 
     /* Autolinking */
     autolinkLibrariesWithApp()
-
 }
 
 /**

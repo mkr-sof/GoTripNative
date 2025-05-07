@@ -1,6 +1,6 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Ionicons from "react-native-vector-icons/Ionicons"; 
+import Ionicons from "@react-native-vector-icons/ionicons"; 
 
 import Feed from "../../features/Feed/Feed";
 import Profile from "../../features/Profile/Profile";

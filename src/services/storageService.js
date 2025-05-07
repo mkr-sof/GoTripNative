@@ -54,6 +54,7 @@ export const clearLocalStorage = () => {
         console.error("Error clearing storage:", error);
     }
 };
+
 export const createTestUsers = () => {
     const testUsers = [
         {
@@ -83,7 +84,7 @@ export const createTestUsers = () => {
     ];
 
     saveDataToStorage("users", testUsers);
-    return testUsers;
+    return { users: testUsers };
 };
 
 
@@ -96,7 +97,7 @@ export const createTestPosts = () => {
         return existingPosts;
     }
 
-    const categories = ["Adventure", "Nature", "City Trips", "Beach"];
+    // const categories = ["Adventure", "Nature", "City Trips", "Beach"];
     const sampleDescriptions = [
         "An amazing experience in the wild!",
         "Exploring the beauty of nature.",
@@ -110,7 +111,7 @@ export const createTestPosts = () => {
             "City Trips": "citytrips",
             Beach: "beach",
         };
-        return `${categoryKeyMap[category]}${index + 1}`; // example: adventure2
+        return `${categoryKeyMap[category]}${index + 1}`;
     };
     const categoryImages = {
         Adventure: [
@@ -138,10 +139,10 @@ export const createTestPosts = () => {
             beach4
         ]
     };
-
     const testPosts = users.flatMap(user =>
         categories.map((category, index) => {
             // const randomImage = categoryImages[category][Math.floor(Math.random() * 4)];
+
             const imageList = categoryImages[category];
             const randomIndex = Math.floor(Math.random() * imageList.length);
             const imageKey = getImageKey(category, randomIndex);
@@ -166,5 +167,5 @@ export const createTestPosts = () => {
     saveDataToStorage("users", users);
     saveDataToStorage("allPosts", testPosts);
     console.log("Test posts created!");
-    return testPosts;
+    return { posts: testPosts }
 };
