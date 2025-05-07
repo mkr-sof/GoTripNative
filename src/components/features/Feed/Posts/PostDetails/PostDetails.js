@@ -1,81 +1,67 @@
 import React, { useState } from "react";
-import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleFavorite } from "../../../../../store/modules/postsSlice";
-import CreatePost from "../../CreatePost/CreatePost";
+import { filterPosts, deletePost } from "../../../../../store/modules/postsSlice";
+import NotFound from "../../../../features/NotFound/NotFound";
+import Button from "../../../../common/Button/Button";
+import CreatePost from "../../../../features/Feed/CreatePost/CreatePost";
 import Popup from "../../../../common/Popup/Popup";
+import PostInfo from "../../../../common/PostInfo/PostInfo";
 
-function PostDetails() {
+const PostDetails = () => {
     const route = useRoute();
     const navigation = useNavigation();
-    const { postId } = route.params;
     const dispatch = useDispatch();
-    const user = useSelector((state) => state.auth.user);
+    const { postId } = route.params;
 
     const [isEditing, setIsEditing] = useState(false);
 
+    const user = useSelector((state) => state.auth.user);
     const post = useSelector((state) =>
-        state.posts.posts.find((p) => p.id.toString() === postId)
+        state.posts.posts.find((p) => p.id.toString() === postId.toString())
     );
 
-    const favorites = useSelector((state) => state.posts.favorites);
-    const isFavorited = favorites.includes(post?.id);
-
-    if (!post) {
-            return <NotFound />;
-    }
-
-    const handleFavorite = () => {
-        if (!user) return;
-        dispatch(toggleFavorite(post.id));
-    };
+    if (!post) return <NotFound />;
 
     const handleAuthorClick = () => {
-        navigation.navigate("Profile", { authorId: post.authorId });
+        dispatch(filterPosts({ filter: "author", userId: post.authorId, sortOrder: "newest" }));
+        navigation.navigate("Profile", { userId: post.authorId });
     };
 
-    const handleEdit = () => {
-        setIsEditing(true);
-    };
-
-    const handleClosePopup = () => {
-        setIsEditing(false);
+    const handleEdit = () => setIsEditing(true);
+    const handleClosePopup = () => setIsEditing(false);
+    const handleDelete = () => {
+        dispatch(deletePost(post.id));
+        navigation.goBack();
     };
 
     return (
-        <ScrollView contentContainerStyle={styles.postContainer}>
-            <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-                <Text style={styles.backButtonText}>⬅ Go Back</Text>
-            </TouchableOpacity>
+        <View style={styles.postContainer}>
+            <Button
+                style={styles.backButton}
+                onPress={() => navigation.goBack()}
+                text="Back"
+            />
 
-            <Text style={styles.postTitle}>{post.title}</Text>
-            <Text style={styles.postDescription}>{post.description}</Text>
-            <TouchableOpacity onPress={handleAuthorClick}>
-                <Text style={styles.postAuthor}>{post.authorName}</Text>
-            </TouchableOpacity>
-            {post.image && (
-                <Image source={{ uri: post.image }} style={styles.postImage} />
+            <PostInfo
+                post={post}
+                onAuthorClick={handleAuthorClick}
+                showFullDescription={true}
+            />
+
+            {user?.id === post.authorId && (
+                <View style={styles.postActions}>
+                    <Button style={styles.editButton} onPress={handleEdit} text="Edit" />
+                    <Button style={styles.deleteButton} onPress={handleDelete} text="Delete" />
+                </View>
             )}
-            <View style={styles.postActions}>
-                {user && (
-                    <TouchableOpacity onPress={handleFavorite}>
-                        <Text style={[styles.favoriteButton, isFavorited && styles.favorited]}>
-                            {isFavorited ? "❤️ Unfavorite" : "🤍 Favorite"}
-                        </Text>
-                    </TouchableOpacity>
-                )}
-                {user && user.id === post.authorId && (
-                    <TouchableOpacity onPress={handleEdit}>
-                        <Text style={styles.editButton}>Edit</Text>
-                    </TouchableOpacity>
-                )}
-            </View>
 
             {isEditing && (
-                <Popup visible={isEditing} onClose={handleClosePopup}>
+                <Popup onClose={handleClosePopup}>
                     <CreatePost
                         onPostCreated={handleClosePopup}
+                        onClick={handleClosePopup}
                         initialTitle={post.title}
                         initialDescription={post.description}
                         initialCategory={post.category}
@@ -86,73 +72,35 @@ function PostDetails() {
                     />
                 </Popup>
             )}
-        </ScrollView>
+        </View>
     );
-}
+};
 
 const styles = StyleSheet.create({
     postContainer: {
-        flexGrow: 1,
-        backgroundColor: "#2f3031",
-        borderRadius: 8,
         padding: 20,
-    },
-    backButton: {
-        marginBottom: 10,
-    },
-    backButtonText: {
-        fontSize: 16,
-        color: "#007bff",
-    },
-    postTitle: {
-        fontSize: 24,
-        fontWeight: "600",
-        color: "#fff",
-        marginBottom: 10,
-    },
-    postDescription: {
-        fontSize: 16,
-        color: "#fff",
-        marginBottom: 10,
-    },
-    postAuthor: {
-        fontSize: 16,
-        color: "#007bff",
-        textDecorationLine: "underline",
-        marginBottom: 20,
-    },
-    postImage: {
-        width: "100%",
-        height: 300,
+        backgroundColor: '#2f3031',
         borderRadius: 8,
-        marginBottom: 20,
-        resizeMode: "cover",
+        margin: 16,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+        elevation: 4,
     },
     postActions: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        marginTop: 20,
-    },
-    favoriteButton: {
-        fontSize: 14,
-        color: "#555",
-    },
-    favorited: {
-        color: "red",
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 15,
     },
     editButton: {
-        fontSize: 14,
-        color: "#007bff",
+        backgroundColor: '#3137c9',
     },
-    notFoundContainer: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#2f3031",
+    backButton: {
+        backgroundColor: '#3137c9',
     },
-    notFoundText: {
-        fontSize: 18,
-        color: "#fff",
+    deleteButton: {
+        backgroundColor: '#dc3545',
     },
 });
 

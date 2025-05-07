@@ -1,5 +1,6 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import FeedMavigation from "../../../routes/FeedMavigation";
 import Ionicons from "@react-native-vector-icons/ionicons"; 
 
 import Feed from "../../features/Feed/Feed";
@@ -35,7 +36,7 @@ function BottomTabNavigator() {
                     }
                 
                     let iconName;
-                    if (route.name === "Feed") {
+                    if (route.name === "Home") {
                         iconName = focused ? "home" : "home-outline";
                     } else if (route.name === "Search") {
                         iconName = focused ? "search" : "search-outline";
@@ -49,7 +50,7 @@ function BottomTabNavigator() {
                 tabBarInactiveTintColor: "#aaa",
             })}
         >
-            <Tab.Screen name="Feed" component={Feed} />
+            <Tab.Screen name="Home" component={FeedMavigation} />
             <Tab.Screen name="Search" component={SearchInput} />
             {/* <Tab.Screen name="CreatePost" component={CreatePost} /> */}
             <Tab.Screen name="Profile" component={Profile} />

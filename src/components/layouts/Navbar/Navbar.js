@@ -17,7 +17,7 @@ function Navbar() {
 
     return (
         <View style={styles.navbar}>
-            <TouchableOpacity onPress={() => navigation.navigate("Home")}>
+            <TouchableOpacity onPress={() => navigation.navigate("FeedMavigation")}>
                 <Text style={styles.navItem}>Home</Text>
             </TouchableOpacity>
 

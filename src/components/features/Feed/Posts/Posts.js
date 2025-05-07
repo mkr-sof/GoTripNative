@@ -15,7 +15,7 @@ function Posts() {
     }, [dispatch]);
 
     const renderPost = ({ item }) => <PostCard post={item} />;
-
+console.log("Posts", posts);
     const data = filter === "all" ? posts : filteredPosts;
 
     return (
@@ -28,6 +28,18 @@ function Posts() {
                     renderItem={renderPost}
                     keyExtractor={(item) => item.id.toString()}
                 />
+
+                // <FlatList
+//             data={posts}
+//             keyExtractor={(item) => item.id}
+//             renderItem={renderItem}
+//             ListEmptyComponent={
+//                 <Text style={styles.empty}>No posts found.</Text>
+//             }
+//             contentContainerStyle={
+//                 posts.length === 0 && styles.emptyContainer
+//             }
+//         />
             )}
         </View>
     );
