@@ -10,22 +10,26 @@ function CategoryPage() {
     const route = useRoute();
     const { categoryName } = route.params;
     const dispatch = useDispatch();
-    const posts = useSelector((state) => state.posts.filteredPosts);
+    const posts = useSelector((state) => state.posts.posts);
     const { filter, sortOrder, userId } = useSelector((state) => state.posts);
 
     useEffect(() => {
-        dispatch(filterPosts({ filter, sortOrder, userId, category: categoryName }));
-    }, [categoryName, dispatch, filter, sortOrder, userId]);
-
+        dispatch(filterPosts({ 
+            filter: "category", 
+            sortOrder, 
+            userId, 
+            category: categoryName 
+        }));
+    }, [categoryName, dispatch, sortOrder, userId, posts]);
     return (
-        <ScrollView contentContainerStyle={styles.categoryPage}>
+        <View style={styles.categoryPage}>
             <Text style={styles.title}>Category: {categoryName.replace(/-/g, " ")}</Text>
             {posts.length > 0 ? (
                 <Posts posts={posts} />
             ) : (
                 <Description>There are no posts in this category.</Description>
             )}
-        </ScrollView>
+        </View>
     );
 }
 
@@ -33,7 +37,7 @@ const styles = StyleSheet.create({
     categoryPage: {
         flexGrow: 1,
         padding: 20,
-        backgroundColor: "#2f3031",
+        backgroundColor: "#1e1f21",
     },
     title: {
         fontSize: 24,

@@ -36,7 +36,9 @@ export const signupUser = async (userData, dispatch) => {
 export const profile = async (userData, dispatch) => {
 try{
     const {email, password, rememberMe} = userData;
+    console.log("userData", userData)
     const users = await getUsers();
+    console.log("users", users);
     const user = users.find(user => user.email === email);
     
     if(!user){
@@ -50,7 +52,7 @@ try{
     saveDataToStorage("profile", user);
     
     dispatch(setProfile({ ...user, rememberMe }));
-    return {success: true};
+    return {success: true, user};
 }catch(error){
     return {success: false, message: "Something went wrong!"}
 }

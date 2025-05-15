@@ -15,7 +15,7 @@ const ForgotPassword = () => {
   const navigation = useNavigation();
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
+    // event.preventDefault();
     setError("");
     setMessage("");
 
@@ -41,8 +41,8 @@ const ForgotPassword = () => {
           value={email}
           onChange={setEmail}
         />
-        <Button onPress={handleSubmit} text="Submit" />
-      </View>
+      </View>        
+      <Button onPress={handleSubmit} text="Submit" />
       <TouchableOpacity onPress={() => navigation.navigate("Login")}>
         <Text style={styles.link}>Back to Login</Text>
       </TouchableOpacity>

@@ -94,16 +94,17 @@ export default function Profile() {
     const route = useRoute();
     const navigation = useNavigation();
 
-    const loggedInUser = useSelector((state) => state.auth.user);
+    const profile = useSelector((state) => state.auth.user);
     const allUsers = useSelector((state) => state.auth.users);
     const posts = useSelector((state) => state.posts.posts);
+    
 
     const { userId } = route.params || {};
-    const isOwnProfile = !userId || userId === loggedInUser?.id;
 
-    const profileUser = isOwnProfile
-        ? loggedInUser
-        : allUsers.find((user) => user.id === Number(userId));
+   const profileUser = userId
+        ? allUsers.users.find(user => user.id === Number(userId))
+        : profile;
+
 
     const userPosts = posts.filter((post) => post.authorId === profileUser?.id);
 
@@ -118,11 +119,14 @@ export default function Profile() {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>
-                {isOwnProfile ? "Your Profile" : `${profileUser.name}'s Profile`}
+                {profile ? "Your Profile" : `${profileUser.name}'s Profile`}
             </Text>
 
-            {isOwnProfile && (
-                <Button title="Edit Profile" onPress={() => navigation.navigate("EditProfile")} />
+            {profile && (
+                <Button title="Edit Profile" onPress={() => navigation.navigate("ProfileNavigation",{
+                    screen: "EditProfile",
+                    params: { userId: profileUser.id },
+                })} />
             )}
 
             <Text style={styles.subtitle}>Posts by {profileUser.name}</Text>

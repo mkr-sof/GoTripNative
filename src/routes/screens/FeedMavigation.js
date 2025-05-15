@@ -3,18 +3,17 @@ import Feed from "../../components/features/Feed/Feed"
 
 const Stack = createNativeStackNavigator()
 
-function FeedMavigation(){
-    return(
-<Stack.Navigator 
-screenOptions={{headerShown:false}}
->
-                <Stack.Screen name="Feed" component={Feed}/>
-                {/* <Stack.Screen name="Home" component={Home}/> */}
+function FeedMavigation() {
+    return (
+        <Stack.Navigator
+            screenOptions={{ headerShown: false }}
+        >
+            <Stack.Screen name="Feed" component={Feed} />
 
-    </Stack.Navigator>
+        </Stack.Navigator>
 
 
-    ) 
+    )
 }
 
-export default FeedMavigation
+export default FeedMavigation;

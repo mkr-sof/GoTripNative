@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { View, StyleSheet } from "react-native";
 import { useDispatch } from "react-redux";
 import { searchPosts, resetFilter } from "../../store/modules/postsSlice";
-import SearchInput from "../../components/common/SearchInput/SearchInput"; 
-import Posts from "../../components/features/Feed/Posts/Posts"; 
+import SearchInput from "../../components/common/SearchInput/SearchInput";
+import Posts from "../../components/features/Feed/Posts/Posts";
 
 function SearchScreen() {
     const [query, setQuery] = useState("");

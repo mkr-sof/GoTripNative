@@ -21,6 +21,8 @@ function LoginNavigation() {
         component={BottomTabNavigator}
         options={{
           header: () => <Header />,
+          headerStyle: { backgroundColor: "#2f3031" },
+          contentStyle: { backgroundColor: 'transparent' },//need correction 
         }}
       />
       <Stack.Screen
@@ -31,6 +33,16 @@ function LoginNavigation() {
         name="NotFound"
         component={NotFound}
         options={{ title: "Not Found" }}
+      />
+      <Stack.Screen
+        name="ProfileNavigation"
+        component={ProfileNavigation}
+        options={{ title: "ProfileNavigation" }}
+      />
+      <Stack.Screen
+        name="CategoryPage"
+        component={CategoryPage}
+        options={{ title: "Category" }}
       />
     </Stack.Navigator>
   );

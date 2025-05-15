@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, Image, TouchableOpacity, StyleSheet } from "react-native";
-import { MaterialIcons } from "react-native-vector-icons";
+import Ionicons from "@react-native-vector-icons/ionicons";
 import * as ImagePicker from "react-native-image-picker";
 
 function FileUpload({ onChange, image, onRemoveImage }) {
@@ -32,14 +32,15 @@ function FileUpload({ onChange, image, onRemoveImage }) {
     <View style={styles.container}>
       {!image && (
         <TouchableOpacity style={styles.uploadButton} onPress={handlePickImage}>
-          <MaterialIcons name="file-upload" size={35} color="#444" />
+          <Ionicons name="camera-reverse-outline" size={35} color="#444" />
+
         </TouchableOpacity>
       )}
       {image && (
         <View style={styles.imagePreviewContainer}>
           <Image source={{ uri: image }} style={styles.imagePreview} />
           <TouchableOpacity style={styles.closeIcon} onPress={handleRemoveImage}>
-            <MaterialIcons name="close" size={35} color="#ccc" />
+            <Ionicons name="close" size={35} color="#ccc" />
           </TouchableOpacity>
         </View>
       )}
@@ -49,8 +50,9 @@ function FileUpload({ onChange, image, onRemoveImage }) {
 
 const styles = StyleSheet.create({
   container: {
+    alignItems: "center",
+    marginBottom: 20,
     position: "relative",
-    width: "100%",
   },
   uploadButton: {
     backgroundColor: "#ccc",
@@ -66,7 +68,7 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   imagePreview: {
-    width: "100%",
+    width: 300,
     height: 200,
     borderRadius: 4,
     resizeMode: "cover",

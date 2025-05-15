@@ -87,16 +87,14 @@ const postsSlice = createSlice({
 
             if (filter === "category" && category) {
                 const categoryToCheck = category.toLowerCase().replace(/\s+/g, '-');
-                console.log("Filtering posts by category:", categoryToCheck);
                 filtered = filtered.filter(post => {
                     const postCategory = post.category?.toLowerCase().replace(/\s+/g, '-');
-                    console.log("Post category:", postCategory);
                     return postCategory === categoryToCheck;
                 });
             }
 
             if (query) {
-                filtered = filtered.updatedPostfilter(post =>
+                filtered = filtered.filter(post =>
                     post.title.toLowerCase().includes(query.toLowerCase())
                 );
             }

@@ -12,10 +12,18 @@ import Avatar from "../../common/Avatar/Avatar";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 function Header() {
+
+    const usersFromStorage = storage.getString("users");
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const profile = useSelector((state) => state.auth.user);
+    const users = useSelector((state) => state.auth.users);
+    const posts = useSelector((state) => state.posts.posts);
     const [searchQuery, setSearchQuery] = useState("");
+
+// console.log("users ", users);
+    // console.log("posts ", posts);
+    // console.log("usersFromStorage ", usersFromStorage);
 
     useEffect(() => {
         const initializeData = () => {
@@ -48,7 +56,13 @@ function Header() {
         dispatch(setProfile(null));
         navigation.navigate("Login");
     };
+    const handleLogin = () => {
+        navigation.navigate("Login");
+    };
 
+    const handleSignup = () => {
+        navigation.navigate("Signup");
+    };
     return (
         <View style={styles.headerContainer}>
             <TouchableOpacity onPress={() => navigation.navigate("FeedNavigation", {
@@ -61,10 +75,10 @@ function Header() {
             <View style={styles.rightSection}>
                 {!profile ? (
                     <>
-                        <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+                        <TouchableOpacity onPress={() => handleLogin()}>
                             <Text style={styles.authText}>Login</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => navigation.navigate("Signup")}>
+                        <TouchableOpacity onPress={() => handleSignup()}>
                             <Text style={styles.authText}>Sign Up</Text>
                         </TouchableOpacity>
                     </>

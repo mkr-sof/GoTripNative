@@ -62,7 +62,7 @@ function CreatePost({
     };
 
     return (
-        <ScrollView contentContainerStyle={styles.createPostContainer}>
+        <View style={styles.createPostContainer}>
             <Text style={styles.title}>{isEditing ? "Edit Post" : "Create a New Post"}</Text>
             <View style={styles.formContainer}>
                 <InputField
@@ -93,12 +93,14 @@ function CreatePost({
                     onPress={handleCreatePost}
                 />
             </View>
-        </ScrollView>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
     createPostContainer: {
+        padding: 20,
+        flex: 1,
         backgroundColor: "#2f3031",
         paddingVertical: 15,
         borderRadius: 8,

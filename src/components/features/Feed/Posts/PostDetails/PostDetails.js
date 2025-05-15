@@ -26,7 +26,10 @@ const PostDetails = () => {
 
     const handleAuthorClick = () => {
         dispatch(filterPosts({ filter: "author", userId: post.authorId, sortOrder: "newest" }));
-        navigation.navigate("Profile", { userId: post.authorId });
+        navigation.navigate("ProfileNavigation", {
+            screen: "Profile",
+            params: { userId: post.authorId },
+        });
     };
 
     const handleEdit = () => setIsEditing(true);

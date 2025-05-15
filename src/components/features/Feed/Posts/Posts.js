@@ -15,7 +15,7 @@ function Posts() {
     }, [dispatch]);
 
     const renderPost = ({ item }) => <PostCard post={item} />;
-console.log("Posts", posts);
+// console.log("Posts", posts);
     const data = filter === "all" ? posts : filteredPosts;
 
     return (

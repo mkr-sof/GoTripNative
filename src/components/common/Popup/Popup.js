@@ -1,23 +1,27 @@
 import React from "react";
-import { Modal, View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { MaterialIcons } from "react-native-vector-icons";
+import { Modal, View, TouchableWithoutFeedback, TouchableOpacity, StyleSheet } from "react-native";
+import Ionicons from "@react-native-vector-icons/ionicons";
 
 function Popup({ children, onClose, visible }) {
   return (
     <Modal
+      accessible={true}
+      accessibilityViewIsModal={true}
       transparent={true}
       animationType="fade"
       visible={visible}
       onRequestClose={onClose}
     >
-      <View style={styles.popupContainer}>
-        <View style={styles.popupContent}>
-          <TouchableOpacity style={styles.closeIcon} onPress={onClose}>
-            <MaterialIcons name="close" size={24} color="#fff" />
-          </TouchableOpacity>
-          {children}
+      <TouchableWithoutFeedback onPress={onClose}>
+        <View style={styles.popupContainer}>
+          <View style={styles.popupContent}>
+            <TouchableOpacity style={styles.closeIcon} onPress={onClose}>
+              <Ionicons name="close" size={24} color="#fff" />
+            </TouchableOpacity>
+            {children}
+          </View>
         </View>
-      </View>
+      </TouchableWithoutFeedback>
     </Modal>
   );
 }
@@ -30,6 +34,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.6)",
   },
   popupContent: {
+    height: "80%",
     width: "80%",
     backgroundColor: "#2f3031",
     borderRadius: 12,

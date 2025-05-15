@@ -2,13 +2,13 @@ import React, {useState} from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Pressable, TouchableWithoutFeedback } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 
-function SelectField({ value, onSelect, options, placeholder = "Choose a Category", width = 160 }) {
+function SelectField({ value, onChange, options, placeholder = "Choose a Category", width = 160 }) {
     const [open, setOpen] = useState(false);
     const [selected, setSelected] = useState(null);
     const handleSelect = (option) => {
         setSelected(option);
         setOpen(false);
-        onSelect(option);
+        onChange(option);
     };
     return (
         <View style={[styles.dropdown, { width }]}>

@@ -7,7 +7,7 @@ const PostCard = ({ post }) => {
     const navigation = useNavigation();
 
     const handleAuthorClick = () => {
-        navigation.navigate("Profile", {
+        navigation.navigate("ProfileNavigation", {
             screen: "Profile",
             params: { userId: post.authorId },
         });

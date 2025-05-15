@@ -35,7 +35,10 @@ const Login = () => {
     try {
       const response = await profile({ email, password, rememberMe }, dispatch);
       if (response.success) {
-        navigation.navigate("Profile");
+        navigation.navigate("ProfileNavigation", {
+          screen: "Profile",
+          params: { userId: post.authorId },
+        });
       } else {
         setError(response.message);
       }
@@ -69,8 +72,9 @@ const Login = () => {
           <CheckBox value={rememberMe} onValueChange={setRememberMe} />
           <Text style={styles.rememberMeText}>Remember Me</Text>
         </View> */}
-        <Button onPress={handleSubmit} text="Login" />
+        
       </View>
+      <Button onPress={handleSubmit} text="Login" />
       <View style={styles.linksContainer}>
         <TouchableOpacity onPress={() => navigation.navigate("Signup")}>
           <Text style={styles.link}>Signup</Text>

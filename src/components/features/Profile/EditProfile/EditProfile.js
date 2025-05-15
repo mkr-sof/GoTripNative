@@ -142,7 +142,7 @@ export default function EditProfile() {
     const [error, setError] = useState("");
 
     const pickImage = async () => {
-        const result = await ImagePicker.launchImageLibraryAsync({
+        const result = await ImagePicker.launchImageLibrary({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             base64: true,
             allowsEditing: true,

@@ -9,10 +9,9 @@ import { setPosts } from "../store/modules/postsSlice";
 import { setUsers, setProfile } from "../store/modules/authSlice";
 import LoginNavigation from "./screens/LoginNavigation";
 import LogoutNavigation from "./screens/LogoutNavigation";
-// import LogoutNavigation from "./routes/LogoutNavgiation";
 
 
-function Navigation(){
+function Navigation() {
     const dispatch = useDispatch();
     const profile = useSelector((state) => state.auth.user);
 
@@ -26,8 +25,7 @@ function Navigation(){
     }, [dispatch])
     return (
         <NavigationContainer>
-            <LoginNavigation />
-          {/* {profile ? <LoginNavigation/> : <LogoutNavigation/>} */}
+            {profile ? <LoginNavigation /> : <LogoutNavigation />}
         </NavigationContainer>
     )
 }
