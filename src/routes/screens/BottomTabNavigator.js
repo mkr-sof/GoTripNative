@@ -1,12 +1,13 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import FeedMavigation from "../../../routes/FeedMavigation";
+import FeedMavigation from "./FeedMavigation";
 import Ionicons from "@react-native-vector-icons/ionicons"; 
-
-import Feed from "../../features/Feed/Feed";
-import Profile from "../../features/Profile/Profile";
-import CreatePost from "../../features/Feed/CreatePost/CreatePost";
-import SearchInput from "../../common/SearchInput/SearchInput";
+import SearchScreen from "./SearchScreen";
+import ProfileNavigation from "./ProfileNavigation";
+import Feed from "../../components/features/Feed/Feed";
+import Profile from "../../components/features/Profile/Profile";
+import CreatePost from "../../components/features/Feed/CreatePost/CreatePost";
+import SearchInput from "../../components/common/SearchInput/SearchInput";
 
 const Tab = createBottomTabNavigator();
 
@@ -29,7 +30,7 @@ function BottomTabNavigator() {
                                 size={focused ? 70 : 60} 
                                 color="#db5f5f"
                                 style={{
-                                    marginBottom: 20, // Push it up above the tab bar
+                                    marginBottom: 20, 
                                 }}
                             />
                         );
@@ -46,14 +47,14 @@ function BottomTabNavigator() {
                 
                     return <Ionicons name={iconName} size={size} color={color} />;
                 },
-                tabBarActiveTintColor: "#db5f5f",
+                tabBarActiveTintColor: "#2f33a1",
                 tabBarInactiveTintColor: "#aaa",
             })}
         >
             <Tab.Screen name="Home" component={FeedMavigation} />
-            <Tab.Screen name="Search" component={SearchInput} />
+            <Tab.Screen name="Search" component={SearchScreen} />
             {/* <Tab.Screen name="CreatePost" component={CreatePost} /> */}
-            <Tab.Screen name="Profile" component={Profile} />
+            <Tab.Screen name="Profile" component={ProfileNavigation} />
         </Tab.Navigator>
     );
 }

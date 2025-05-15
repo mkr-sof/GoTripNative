@@ -1,88 +1,94 @@
-import React, { useState } from "react";
-import { View, TextInput, Text, StyleSheet, Animated } from "react-native";
+import React, { useEffect } from "react";
+import { View, TextInput, StyleSheet, Platform } from "react-native";
+import Animated, {
+    useSharedValue,
+    useAnimatedStyle,
+    withTiming,
+    interpolate,
+} from "react-native-reanimated";
 
-function InputField({ label, type = "default", placeholder, value, onChange }) {
-    const [isFocused, setIsFocused] = useState(false);
-    const labelPosition = new Animated.Value(value ? 1 : 0);
+const InputField = ({
+    label,
+    name,
+    type,
+    placeholder,
+    className,
+    value,
+    onChange,
+    onBlur,
+    onFocus,
+}) => {
+    const isFocused = useSharedValue(value ? 1 : 0);
+
+    useEffect(() => {
+        isFocused.value = value ? 1 : 0;
+    }, [value]);
+
+    const animatedLabelStyle = useAnimatedStyle(() => {
+        return {
+            position: 'absolute',
+            left: 0,
+            bottom: interpolate(isFocused.value, [0, 1], [10, 40]),
+            fontSize: interpolate(isFocused.value, [0, 1], [16, 12]),
+            color: isFocused.value === 1 ? '#007bff' : 'grey',
+        };
+    });
 
     const handleFocus = () => {
-        setIsFocused(true);
-        Animated.timing(labelPosition, {
-            toValue: 1,
-            duration: 300,
-            useNativeDriver: false,
-        }).start();
+        isFocused.value = withTiming(1, { duration: 200 });
+        onFocus?.();
     };
 
     const handleBlur = () => {
-        setIsFocused(false);
         if (!value) {
-            Animated.timing(labelPosition, {
-                toValue: 0,
-                duration: 300,
-                useNativeDriver: false,
-            }).start();
+            isFocused.value = withTiming(0, { duration: 200 });
         }
-    };
-
-    const labelStyle = {
-        position: "absolute",
-        left: 0,
-        bottom: labelPosition.interpolate({
-            inputRange: [0, 1],
-            outputRange: [10, 30],
-        }),
-        fontSize: labelPosition.interpolate({
-            inputRange: [0, 1],
-            outputRange: [16, 12],
-        }),
-        color: labelPosition.interpolate({
-            inputRange: [0, 1],
-            outputRange: ["grey", "#007bff"],
-        }),
+        onBlur?.();
     };
 
     return (
         <View style={styles.inputContainer}>
+            <Animated.Text style={[styles.inputLabel, animatedLabelStyle]}>
+                {label}
+            </Animated.Text>
             <TextInput
-                style={[
-                    styles.inputField,
-                    isFocused && styles.focusedInputField,
-                ]}
+                style={[styles.inputField, className]}
                 value={value}
                 onChangeText={onChange}
-                onFocus={handleFocus}
                 onBlur={handleBlur}
-                placeholder={placeholder}
-                placeholderTextColor="transparent"
-                keyboardType={type}
+                onFocus={handleFocus}
+                placeholder=" "
+                placeholderTextColor="#ddd"
+                secureTextEntry={type === "password"}
+                autoCapitalize="none"
+                autoComplete={Platform.OS === 'web' ? "off" : "off"}
             />
-            {label && (
-                <Animated.Text style={labelStyle}>
-                    {label}
-                </Animated.Text>
-            )}
         </View>
     );
-}
+};
 
 const styles = StyleSheet.create({
     inputContainer: {
-        position: "relative",
-        width: "100%",
+        position: 'relative',
+        width: '100%',
+        marginBottom: 20,
     },
     inputField: {
-        width: "100%",
+        width: '100%',
         height: 40,
+        marginTop: 20,
         borderBottomWidth: 1,
-        borderBottomColor: "#ddd",
-        backgroundColor: "transparent",
+        borderBottomColor: '#ddd',
+        backgroundColor: 'transparent',
         fontSize: 16,
-        color: "#fff",
+        color: '#fff',
     },
-    focusedInputField: {
-        borderBottomWidth: 2,
-        borderBottomColor: "#007bff",
+    inputLabel: {
+        position: 'absolute',
+        left: 0,
+        // bottom is animated
+        // fontSize is animated
+        color: 'grey', // default color
     },
 });
 

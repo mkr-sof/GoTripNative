@@ -1,5 +1,5 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
-import Feed from "../components/features/Feed/Feed"
+import Feed from "../../components/features/Feed/Feed"
 
 const Stack = createNativeStackNavigator()
 

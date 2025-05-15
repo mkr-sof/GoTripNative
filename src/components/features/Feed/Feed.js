@@ -4,7 +4,10 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Posts from "./Posts/Posts";
 import CreatePost from "./CreatePost/CreatePost";
-import { setPosts } from "../../../store/modules/postsSlice";
+import Filters from "../../common/Filters/Filters";
+// import { useScrollPosition } from "../../../hooks/useScrollPosition";
+import { fetchPosts } from "../../../store/modules/postsSlice";
+import { setPosts, filterPosts } from "../../../store/modules/postsSlice";
 import { setUsers, setProfile } from "../../../store/modules/authSlice";
 import { getAllPosts } from "../../../services/postService";
 import { getUsers } from "../../../services/userService";
@@ -21,86 +24,28 @@ import {
     Modal
 } from "react-native";
 
-
-// function Feed() {
-
-//     const posts = useSelector((state) => state.posts.posts);
-
-//     const renderItem = ({ item }) => (
-//         <View style={styles.card}>
-//             <Image source={imageMap[item.image]} style={styles.image} />
-//             <Text style={styles.title}>{item.title}</Text>
-//             <Text style={styles.author}>by {item.authorName}</Text>
-//             <Text style={styles.description}>{item.description}</Text>
-//             <Text style={styles.category}>{item.category}</Text>
-//         </View>
-//     );
-
-//     return (
-//         <FlatList
-//             data={posts}
-//             keyExtractor={(item) => item.id}
-//             renderItem={renderItem}
-//             ListEmptyComponent={
-//                 <Text style={styles.empty}>No posts found.</Text>
-//             }
-//             contentContainerStyle={
-//                 posts.length === 0 && styles.emptyContainer
-//             }
-//         />
-//     );
-// };
-
-// const styles = StyleSheet.create({
-//     card: {
-//         margin: 10,
-//         padding: 10,
-//         borderRadius: 8,
-//         backgroundColor: "#fff",
-//         elevation: 2
-//     },
-//     image: {
-//         width: "100%",
-//         height: 200,
-//         borderRadius: 8,
-//         marginBottom: 10
-//     },
-//     title: {
-//         fontSize: 18,
-//         fontWeight: "bold"
-//     },
-//     author: {
-//         marginTop: 5,
-//         fontStyle: "italic",
-//         color: "#555"
-//     },
-//     description: {
-//         marginVertical: 5
-//     },
-//     category: {
-//         fontSize: 14,
-//         color: "#888",
-//         fontStyle: "italic"
-//     },
-//     empty: {
-//         textAlign: "center",
-//         fontSize: 16,
-//         marginTop: 50
-//     },
-//     emptyContainer: {
-//         flex: 1,
-//         justifyContent: "center"
-//     }
-// });
-
-// export default Feed;
-
 function Feed() {
     const user = useSelector((state) => state.auth.user);
     const [isCreateOpen, setIsCreateOpen] = useState(false);
+    const posts = useSelector((state) => state.posts.posts);
+    const filteredPosts = useSelector((state) => state.posts.filteredPosts);
+    const filter = useSelector((state) => state.posts.filter);
+    const sortOrder = useSelector((state) => state.posts.sortOrder);
+    const dispatch = useDispatch();
 
+    // useScrollPosition((scrollY) => {
+    //     setShowScrollUp(scrollY > 300);
+    // });
+    
+    useEffect(() => {
+        dispatch(fetchPosts());
+    }, [dispatch]);
+    const handleFilterChange = (filter, sortOrder) => {
+        dispatch(filterPosts({ filter, sortOrder, userId: user?.id }));
+    };
     return (
         <View style={styles.container}>
+            <Filters onFilterChange={handleFilterChange}/> 
             {user && (
                 <TouchableOpacity
                     style={styles.createButton}

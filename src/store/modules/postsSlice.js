@@ -20,7 +20,7 @@ const postsSlice = createSlice({
     initialState,
     reducers: {
         setPosts: (state, action) => {
-            console.log("Action dispatched:", action);
+            // console.log("Action dispatched:", action);
             const posts = action.payload;
             state.posts = posts;
             state.filteredPosts = [...posts];
@@ -59,7 +59,7 @@ const postsSlice = createSlice({
             });
             saveDataToStorage("allPosts", state.posts);
             saveDataToStorage('users', state.users);
-            console.log("Post added to Redux state and localStorage:", state.posts);
+            // console.log("Post added to Redux state and localStorage:", state.posts);
         },
         filterPosts: (state, action) => {
             const {

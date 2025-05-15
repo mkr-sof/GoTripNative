@@ -1,6 +1,6 @@
 import React from "react";
 import { View, TextInput, StyleSheet } from "react-native";
-import { Ionicons } from "react-native-vector-icons/Ionicons";
+import Ionicons from "@react-native-vector-icons/ionicons";
 
 function SearchInput({ searchInputValue, onBlur, onKeyDown, onChange, placeholder }) {
     

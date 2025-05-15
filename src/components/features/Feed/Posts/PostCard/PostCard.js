@@ -7,7 +7,10 @@ const PostCard = ({ post }) => {
     const navigation = useNavigation();
 
     const handleAuthorClick = () => {
-        navigation.navigate("Profile", { userId: post.authorId });
+        navigation.navigate("Profile", {
+            screen: "Profile",
+            params: { userId: post.authorId },
+        });
     };
 
     const handleCardClick = () => {

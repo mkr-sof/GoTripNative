@@ -5,8 +5,8 @@ import { filterPosts } from "../../../store/modules/postsSlice";
 
 function Filters() {
     const dispatch = useDispatch();
-    const filter = useSelector((state) => state.posts.filter); // Assuming `filter` is part of the posts slice
-    const sortOrder = useSelector((state) => state.posts.sortOrder); // Assuming `sortOrder` is part of the posts slice
+    const filter = useSelector((state) => state.posts.filter); 
+    const sortOrder = useSelector((state) => state.posts.sortOrder); 
 
     const handleFilterChange = (newFilter) => {
         dispatch(filterPosts({ filter: newFilter, sortOrder }));

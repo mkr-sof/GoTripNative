@@ -18,7 +18,7 @@ const PostInfo = ({ post, onAuthorClick, showFullDescription = false }) => {
     };
     const imageUri = imageMap[post.image];
 // console.log("PostInfo", post);
-console.log("Image URI from Redux:", post.image);
+// console.log("Image URI from Redux:", post.image);
 
     return (
         <View style={styles.postInfo}>
