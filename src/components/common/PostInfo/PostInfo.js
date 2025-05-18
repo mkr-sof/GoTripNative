@@ -17,8 +17,6 @@ const PostInfo = ({ post, onAuthorClick, showFullDescription = false }) => {
         dispatch(toggleFavorite(post.id));
     };
     const imageUri = imageMap[post.image];
-// console.log("PostInfo", post);
-// console.log("Image URI from Redux:", post.image);
 
     return (
         <View style={styles.postInfo}>

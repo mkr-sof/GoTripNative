@@ -21,36 +21,6 @@ function Header() {
     const posts = useSelector((state) => state.posts.posts);
     const [searchQuery, setSearchQuery] = useState("");
 
-// console.log("users ", users);
-    // console.log("posts ", posts);
-    // console.log("usersFromStorage ", usersFromStorage);
-
-    useEffect(() => {
-        const initializeData = () => {
-            const savedProfile = storage.getString("profile");
-            if (savedProfile) {
-                const parsed = JSON.parse(savedProfile);
-                dispatch(setProfile(parsed));
-            }
-
-            let users = getUsers();
-            if (!users || users.length === 0) {
-                users = createTestUsers();
-                saveDataToStorage("users", users);
-            }
-            dispatch(setUsers(users));
-
-            let posts = getAllPosts();
-            if (!posts || posts.length === 0) {
-                posts = createTestPosts();
-                saveDataToStorage("allPosts", posts);
-            }
-            dispatch(setPosts(posts));
-        };
-
-        initializeData();
-    }, [dispatch]);
-
     const handleLogout = () => {
         storage.remove({ key: "profile" });
         dispatch(setProfile(null));

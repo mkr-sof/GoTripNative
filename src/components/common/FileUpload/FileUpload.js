@@ -14,9 +14,7 @@ function FileUpload({ onChange, image, onRemoveImage }) {
       },
       (response) => {
         if (response.didCancel) {
-          console.log("User cancelled image picker");
         } else if (response.errorMessage) {
-          console.log("ImagePicker Error: ", response.errorMessage);
         } else if (response.assets && response.assets.length > 0) {
           onChange(response.assets[0].uri);
         }

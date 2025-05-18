@@ -97,7 +97,7 @@ export const createTestPosts = () => {
         return existingPosts;
     }
 
-    // const categories = ["Adventure", "Nature", "City Trips", "Beach"];
+    const categories = ["Adventure", "Nature", "City Trips", "Beach"];
     const sampleDescriptions = [
         "An amazing experience in the wild!",
         "Exploring the beauty of nature.",

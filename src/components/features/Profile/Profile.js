@@ -102,7 +102,7 @@ export default function Profile() {
     const { userId } = route.params || {};
 
    const profileUser = userId
-        ? allUsers.users.find(user => user.id === Number(userId))
+        ? allUsers.find(user => user.id === Number(userId))
         : profile;
 
 

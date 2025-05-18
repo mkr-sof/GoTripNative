@@ -26,7 +26,6 @@ export const signupUser = async (userData, dispatch) => {
     saveDataToStorage("profile", newUser);
     dispatch(setUsers([...users, newUser]));
     await profile({ email, password }, dispatch);
-    // console.log(newUser)
     return { success: true };
 } catch (error) {
     return { success: false, message: "Something went wrong!" };

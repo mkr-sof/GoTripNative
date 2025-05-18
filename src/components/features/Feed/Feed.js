@@ -6,7 +6,7 @@ import Posts from "./Posts/Posts";
 import CreatePost from "./CreatePost/CreatePost";
 import Filters from "../../common/Filters/Filters";
 // import { useScrollPosition } from "../../../hooks/useScrollPosition";
-import { fetchPosts } from "../../../store/modules/postsSlice";
+import { fetchPosts, resetFilter } from "../../../store/modules/postsSlice";
 import { setPosts, filterPosts } from "../../../store/modules/postsSlice";
 import { setUsers, setProfile } from "../../../store/modules/authSlice";
 import { getAllPosts } from "../../../services/postService";
@@ -26,6 +26,7 @@ import {
 
 function Feed() {
     const user = useSelector((state) => state.auth.user);
+    // const users = useSelector((state) => state.auth.users);
     const [isCreateOpen, setIsCreateOpen] = useState(false);
     const posts = useSelector((state) => state.posts.posts);
     const filteredPosts = useSelector((state) => state.posts.filteredPosts);
@@ -36,8 +37,8 @@ function Feed() {
     // useScrollPosition((scrollY) => {
     //     setShowScrollUp(scrollY > 300);
     // });
-    
     useEffect(() => {
+        dispatch(resetFilter());
         dispatch(fetchPosts());
     }, [dispatch]);
     const handleFilterChange = (filter, sortOrder) => {
