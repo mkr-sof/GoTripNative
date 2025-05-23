@@ -16,11 +16,7 @@ const authSlice = createSlice({
         setProfile: (state, action) => {
             const user = action.payload ? action.payload : getCurrentUser();
             state.user = user;
-            const rememberMe = action.payload?.rememberMe;
 
-            if (rememberMe) {
-                saveDataToStorage("profile", state.user);
-            }
             if(action.payload){
             state.users = state.users.filter(user => user.id !== action.payload.id);
             state.users.push(action.payload);

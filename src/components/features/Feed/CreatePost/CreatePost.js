@@ -103,8 +103,6 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#2f3031",
         paddingVertical: 15,
-        borderRadius: 8,
-        marginBottom: 20,
         textAlign: "center",
     },
     title: {

@@ -85,9 +85,10 @@
 // export default Profile;
 
 import React from "react";
-import { View, Text, FlatList, StyleSheet, Button } from "react-native";
+import { View, Text, FlatList, StyleSheet } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
+import Button from "../../common/Button/Button";
 import PostCard from "../Feed/Posts/PostCard/PostCard";
 
 export default function Profile() {
@@ -105,7 +106,7 @@ export default function Profile() {
         ? allUsers.find(user => user.id === Number(userId))
         : profile;
 
-
+console.log("Profile User", profileUser);
     const userPosts = posts.filter((post) => post.authorId === profileUser?.id);
 
     if (!profileUser) {
@@ -118,12 +119,12 @@ export default function Profile() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>
+            {/* <Text style={styles.title}>
                 {profile ? "Your Profile" : `${profileUser.name}'s Profile`}
-            </Text>
+            </Text> */}
 
             {profile && (
-                <Button title="Edit Profile" onPress={() => navigation.navigate("ProfileNavigation",{
+                <Button text={"Edit"} onPress={() => navigation.navigate("ProfileNavigation",{
                     screen: "EditProfile",
                     params: { userId: profileUser.id },
                 })} />
@@ -148,6 +149,7 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 20,
         backgroundColor: "#1e1f21",
+        alignItems: "center",
     },
     title: {
         fontSize: 24,

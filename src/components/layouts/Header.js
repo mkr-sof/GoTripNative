@@ -2,14 +2,15 @@ import React, { useEffect, useState } from "react";
 import { View, TextInput, TouchableOpacity, StyleSheet, Text } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
-import { storage, createTestPosts, createTestUsers, saveDataToStorage } from "../../../services/storageService";
-import { setUsers, setProfile } from "../../../store/modules/authSlice";
-import { setPosts } from "../../../store/modules/postsSlice";
-import { getUsers } from "../../../services/userService";
-import { getAllPosts } from "../../../services/postService";
-import Logo from "../../common/Logo/Logo";
-import Avatar from "../../common/Avatar/Avatar";
-import Ionicons from "react-native-vector-icons/Ionicons";
+import { storage, createTestPosts, createTestUsers, saveDataToStorage } from "../../services/storageService";
+import { setUsers, setProfile } from "../../store/modules/authSlice";
+import { logout } from "../../store/modules/authSlice";
+import { setPosts } from "../../store/modules/postsSlice";
+import { getUsers } from "../../services/userService";
+import { getAllPosts } from "../../services/postService";
+import Logo from "../common/Logo/Logo";
+import Avatar from "../common/Avatar/Avatar";
+import Ionicons from "@react-native-vector-icons/ionicons";
 
 function Header() {
 
@@ -19,12 +20,14 @@ function Header() {
     const profile = useSelector((state) => state.auth.user);
     const users = useSelector((state) => state.auth.users);
     const posts = useSelector((state) => state.posts.posts);
-    const [searchQuery, setSearchQuery] = useState("");
-
+    // console.log("users", users);
+    // console.log("profile.avatar:", profile?.avatar);
     const handleLogout = () => {
-        storage.remove({ key: "profile" });
-        dispatch(setProfile(null));
-        navigation.navigate("Login");
+        dispatch(logout());
+        navigation.reset({
+            index: 0,
+            routes: [{ name: "Tabs" }],
+        });
     };
     const handleLogin = () => {
         navigation.navigate("Login");
@@ -35,10 +38,16 @@ function Header() {
     };
     return (
         <View style={styles.headerContainer}>
-            <TouchableOpacity onPress={() => navigation.navigate("FeedNavigation", {
-                screen: "Feed",
-                // params: { screen: "Feed" },
-            })} style={styles.logo}>
+            <TouchableOpacity
+                onPress={() =>
+                    navigation.navigate("Tabs", {
+                        screen: "Home",
+                        params: {
+                            screen: "Feed"
+                        },
+                    })
+                }
+                style={styles.logo}>
                 <Logo />
             </TouchableOpacity>
 
@@ -57,9 +66,15 @@ function Header() {
                         <TouchableOpacity onPress={handleLogout}>
                             <Ionicons name="log-out-outline" size={24} color="#fff" />
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
+                        <TouchableOpacity onPress={() => navigation.navigate("ProfileNavigation", {
+                            screen: "Profile",
+                            params: { userId: profile.id },
+                        })}>
                             <View style={styles.avatarContainer}>
-                                <Avatar size={36} />
+                                <Avatar
+                                    src={profile.avatar}
+                                    alt={`${profile.name}'s avatar`}
+                                />
                             </View>
                         </TouchableOpacity>
                     </>

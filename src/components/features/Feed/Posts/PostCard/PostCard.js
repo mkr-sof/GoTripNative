@@ -6,14 +6,7 @@ import PostInfo from "../../../../common/PostInfo/PostInfo";
 const PostCard = ({ post }) => {
     const navigation = useNavigation();
 
-    const handleAuthorClick = () => {
-        navigation.navigate("ProfileNavigation", {
-            screen: "Profile",
-            params: { userId: post.authorId },
-        });
-    };
-
-    const handleCardClick = () => {
+      const handleCardClick = () => {
         navigation.navigate("PostDetails", { postId: post.id });
     };
 
@@ -21,7 +14,6 @@ const PostCard = ({ post }) => {
         <TouchableOpacity onPress={handleCardClick} style={styles.postCard}>
             <PostInfo
                 post={post}
-                onAuthorClick={handleAuthorClick}
             />
         </TouchableOpacity>
     );

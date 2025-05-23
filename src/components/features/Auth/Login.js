@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, CheckBox } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getCurrentUser } from "../../../services/storageService";
 import { profile } from "../../../services/authService";
 import Error from "../../common/Error/Error";
@@ -16,28 +16,19 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      const rememberedUser = await getCurrentUser();
-      if (rememberedUser) {
-        setEmail(rememberedUser.email);
-        setRememberMe(true);
-      }
-    };
-    fetchUser();
-  }, []);
+  const users = useSelector((state) => state.auth.users);
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
+    // event.preventDefault();
     setError("");
     try {
-      const response = await profile({ email, password, rememberMe }, dispatch);
+      const response = await profile({ email, password }, dispatch, users);
+      console.log("Login response:", response);
       if (response.success) {
         navigation.navigate("ProfileNavigation", {
           screen: "Profile",
-          params: { userId: post.authorId },
+          params: { userId: response.user.id },
         });
       } else {
         setError(response.message);
@@ -72,7 +63,7 @@ const Login = () => {
           <CheckBox value={rememberMe} onValueChange={setRememberMe} />
           <Text style={styles.rememberMeText}>Remember Me</Text>
         </View> */}
-        
+
       </View>
       <Button onPress={handleSubmit} text="Login" />
       <View style={styles.linksContainer}>

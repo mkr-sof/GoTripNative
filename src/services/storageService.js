@@ -84,7 +84,7 @@ export const createTestUsers = () => {
     ];
 
     saveDataToStorage("users", testUsers);
-    return { users: testUsers };
+    return testUsers ;
 };
 
 
@@ -167,5 +167,5 @@ export const createTestPosts = () => {
     saveDataToStorage("users", users);
     saveDataToStorage("allPosts", testPosts);
     console.log("Test posts created!");
-    return { posts: testPosts }
+    return testPosts 
 };

@@ -1,22 +1,40 @@
 import React from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleFavorite } from "../../../store/modules/postsSlice";
-import Ionicons from "react-native-vector-icons/Ionicons";
+import Ionicons from "@react-native-vector-icons/ionicons";
 import Description from "../../common/Description/Description";
+import { filterPosts } from "../../../store/modules/postsSlice";
 import { imageMap } from "../../../utils/util";
 
-const PostInfo = ({ post, onAuthorClick, showFullDescription = false }) => {
+const PostInfo = ({ post, showFullDescription = false }) => {
     const dispatch = useDispatch();
+    const navigation = useNavigation();
     const user = useSelector((state) => state.auth.user);
     const favorites = useSelector((state) => state.posts.favorites);
     const isFavorited = favorites.includes(post.id);
-
+  const handleAuthorClick = () => {
+    dispatch(filterPosts({ filter: "author", userId: post.authorId, sortOrder: "newest" }));
+        navigation.navigate("Tabs", {
+            screen: "ProfileNavigation",
+            params: {
+                screen: "Profile",
+                params: { userId: post.authorId },
+            },
+        });
+     
+    };
     const handleFavoriteToggle = () => {
         if (!user) return;
         dispatch(toggleFavorite(post.id));
     };
-    const imageUri = imageMap[post.image];
+   const getSource = (image) => {
+  if (imageMap[image]) {
+    return imageMap[image];
+  }
+  return { uri: image };
+};
 
     return (
         <View style={styles.postInfo}>
@@ -27,7 +45,7 @@ const PostInfo = ({ post, onAuthorClick, showFullDescription = false }) => {
             )}
 
             {post.image && (
-                <Image source={imageUri} style={styles.image} />
+                <Image source={getSource(post.image)} style={styles.image} />
             )}
 
             <View style={styles.details}>
@@ -37,7 +55,7 @@ const PostInfo = ({ post, onAuthorClick, showFullDescription = false }) => {
                         : `Created at ${new Date(post.created_at).toLocaleDateString()}`}
                 </Text>
 
-                <TouchableOpacity onPress={onAuthorClick}>
+                <TouchableOpacity onPress={handleAuthorClick}>
                     <Text style={styles.author}>
                         {post.authorName || "Guest"}
                     </Text>

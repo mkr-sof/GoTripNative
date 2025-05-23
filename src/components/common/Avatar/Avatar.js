@@ -1,31 +1,22 @@
 import React from 'react';
 import { Image, StyleSheet } from 'react-native';
 
-function Avatar({ src, alt, showMoreInfo }) {
+function Avatar({ src, alt, size = 40, borderWidth = 2 }) {
     return (
         <Image
-            style={showMoreInfo ? styles.avatarSmall : styles.avatar}
             source={{ uri: src }}
             accessibilityLabel={alt}
+            style={{
+                width: size,
+                height: size,
+                borderRadius: size / 2,
+                borderWidth,
+                borderColor: "#e5eaf1",
+            }}
         />
     );
 }
 
-const styles = StyleSheet.create({
-    avatar: {
-        width: 250,
-        height: 250,
-        borderRadius: 125, 
-        borderWidth: 4,
-        borderColor: '#e5eaf1',
-    },
-    avatarSmall: {
-        width: 80,
-        height: 80,
-        borderRadius: 40, 
-        borderWidth: 4,
-        borderColor: '#e5eaf1',
-    },
-});
+
 
 export default Avatar;

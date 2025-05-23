@@ -173,10 +173,19 @@ export const {
     resetFilter
 } = postsSlice.actions;
 
-export const fetchPosts = () => async (dispatch) => {
+export const fetchPosts = () => async (dispatch, getState) => {
     try {
         const data = await getAllPosts();
         dispatch(setPosts(data));
+
+        const { posts } = getState();
+        dispatch(filterPosts({
+            filter: posts.filter,
+            sortOrder: posts.sortOrder,
+            userId: posts.filterUserId,
+            category: posts.filterCategory,
+            query: posts.filterQuery,
+        }));
     } catch (error) {
         console.error("Failed to fetch posts:", error);
     }

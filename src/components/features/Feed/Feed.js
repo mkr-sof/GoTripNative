@@ -1,7 +1,8 @@
 
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useNavigation } from "@react-navigation/native";
 import Posts from "./Posts/Posts";
 import CreatePost from "./CreatePost/CreatePost";
 import Filters from "../../common/Filters/Filters";
@@ -17,64 +18,58 @@ import { imageMap } from "../../../utils/util";
 import {
     View,
     Text,
-    FlatList,
-    Image,
     StyleSheet,
     TouchableOpacity,
-    Modal
 } from "react-native";
+import { useRoute, useFocusEffect } from "@react-navigation/native";
 
 function Feed() {
+    const navigation = useNavigation();
+    const dispatch = useDispatch();
     const user = useSelector((state) => state.auth.user);
-    // const users = useSelector((state) => state.auth.users);
-    const [isCreateOpen, setIsCreateOpen] = useState(false);
     const posts = useSelector((state) => state.posts.posts);
     const filteredPosts = useSelector((state) => state.posts.filteredPosts);
     const filter = useSelector((state) => state.posts.filter);
     const sortOrder = useSelector((state) => state.posts.sortOrder);
-    const dispatch = useDispatch();
+    const route = useRoute();
+    // useEffect(() => {
+    //     dispatch(resetFilter());
+    //     console.log("Resetting filter");
+    // }, [dispatch, filter]);
+useFocusEffect(
+  useCallback(() => { 
+         console.log("Resetting filter when in Feed", route.params?.resetToAll);
 
-    // useScrollPosition((scrollY) => {
-    //     setShowScrollUp(scrollY > 300);
-    // });
+    if (route.params?.resetToAll) {
+
+      dispatch(resetFilter());
+      dispatch(fetchPosts());
+      dispatch(filterPosts({
+        filter: "all",
+        sortOrder: "newest",
+        userId: user?.id
+      }));
+      
+      navigation.setParams({ resetToAll: false });
+    }
+  }, [dispatch, navigation, route.params?.resetToAll, user?.id])
+);
     useEffect(() => {
-        dispatch(resetFilter());
         dispatch(fetchPosts());
+        console.log("Fetching posts");
     }, [dispatch]);
-    const handleFilterChange = (filter, sortOrder) => {
-        dispatch(filterPosts({ filter, sortOrder, userId: user?.id }));
+
+    const handleFilterChange = () => {
+        dispatch(filterPosts({
+            filter, 
+            sortOrder, 
+            userId: user?.id 
+        }));
     };
     return (
         <View style={styles.container}>
-            <Filters onFilterChange={handleFilterChange}/> 
-            {user && (
-                <TouchableOpacity
-                    style={styles.createButton}
-                    onPress={() => setIsCreateOpen(true)}
-                >
-                    <Ionicons name="add-circle-outline" size={24} color="white" />
-                    <Text style={styles.createText}>Create Post</Text>
-                </TouchableOpacity>
-            )}
-
-            {/* Posts always visible */}
-            <Posts />
-
-            {/* CreatePost modal */}
-            <Modal
-                visible={isCreateOpen}
-                animationType="slide"
-                transparent={false}
-                onRequestClose={() => setIsCreateOpen(false)}
-            >
-                <CreatePost
-                    onPostCreated={() => {
-                        setIsCreateOpen(false);
-                        // Optional: trigger post refresh here
-                    }}
-                    onCancel={() => setIsCreateOpen(false)}
-                />
-            </Modal>
+            <Filters onFilterChange={handleFilterChange} />
+            <Posts posts={posts}/>
         </View>
     );
 }

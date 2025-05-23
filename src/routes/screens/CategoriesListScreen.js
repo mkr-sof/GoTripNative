@@ -9,6 +9,7 @@ const CategoryListScreen = () => {
     const navigation = useNavigation();
 
     const handlePress = (category) => {
+        console.log("Selected category:", category);
         navigation.navigate("CategoryPage", { categoryName: category });
     };
 

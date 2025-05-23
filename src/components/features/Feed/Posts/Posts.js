@@ -1,8 +1,10 @@
-import React, { useEffect } from "react";
-import { View, Text, StyleSheet, FlatList } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { View, Text, StyleSheet, FlatList, TouchableOpacity } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
+import Ionicons from "@react-native-vector-icons/ionicons";
 import { fetchPosts } from "../../../../store/modules/postsSlice";
 import PostCard from "../../../features/Feed/Posts/PostCard/PostCard";
+import Button from "../../../common/Button/Button";
 
 function Posts() {
     const dispatch = useDispatch();
@@ -10,10 +12,20 @@ function Posts() {
     const filteredPosts = useSelector((state) => state.posts.filteredPosts);
     const filter = useSelector((state) => state.posts.filter);
 
-    useEffect(() => {
-        dispatch(fetchPosts());
-    }, [dispatch]);
+    const flatListRef = useRef();
+    const [showScrollTop, setShowScrollTop] = useState(false);
 
+    // useEffect(() => {
+    //     dispatch(fetchPosts());
+    // }, [dispatch]);
+    const handleScroll = (event) => {
+        const offsetY = event.nativeEvent.contentOffset.y;
+        setShowScrollTop(offsetY > 300);
+    };
+
+    const toTop = () => {
+        flatListRef.current?.scrollToOffset({ animated: true, offset: 0 });
+    };
     const renderPost = ({ item }) => <PostCard post={item} />;
     const data = filter === "all" ? posts : filteredPosts;
 
@@ -22,23 +34,20 @@ function Posts() {
             {!data.length ? (
                 <Text style={styles.noPostsText}>No posts available</Text>
             ) : (
-                <FlatList
-                    data={data}
-                    renderItem={renderPost}
-                    keyExtractor={(item) => item.id.toString()}
-                />
-
-                // <FlatList
-//             data={posts}
-//             keyExtractor={(item) => item.id}
-//             renderItem={renderItem}
-//             ListEmptyComponent={
-//                 <Text style={styles.empty}>No posts found.</Text>
-//             }
-//             contentContainerStyle={
-//                 posts.length === 0 && styles.emptyContainer
-//             }
-//         />
+                <>
+                    <FlatList
+                        data={data}
+                        ref={flatListRef}
+                        onScroll={handleScroll}
+                        renderItem={renderPost}
+                        keyExtractor={(item) => item.id.toString()}
+                    />
+                    {showScrollTop && (
+                        <View style={styles.scrollTopWrapper}>
+                            <Button onPress={toTop} text="Scroll up" />
+                        </View>
+                    )}
+                </>
             )}
         </View>
     );
@@ -46,6 +55,7 @@ function Posts() {
 
 const styles = StyleSheet.create({
     postsContainer: {
+        position: "relative",
         flex: 1,
         flexDirection: "column",
         gap: 16,
@@ -56,6 +66,12 @@ const styles = StyleSheet.create({
         color: "#dfdddd",
         fontSize: 16,
     },
+    scrollTopWrapper: {
+        bottom: 0,
+        right: 20,
+        position: "absolute",
+        backgroundColor: "transparent"
+    }
 });
 
 export default Posts;

@@ -1,6 +1,6 @@
 import { storage } from "./storageService";
-import { saveDataToStorage, removeDataFromStorage } from './services/storageService';
-import {  getUsers } from "./services/userService";
+import { saveDataToStorage, removeDataFromStorage } from './storageService';
+import {  getUsers } from "./userService";
 import { setProfile, setUsers } from "../store/modules/authSlice";
 
 
@@ -32,14 +32,19 @@ export const signupUser = async (userData, dispatch) => {
 }
 }
 
-export const profile = async (userData, dispatch) => {
+export const profile = async (userData, dispatch, usersFromState = []) => {
 try{
-    const {email, password, rememberMe} = userData;
+    const {email, password} = userData;
     console.log("userData", userData)
-    const users = await getUsers();
-    console.log("users", users);
-    const user = users.find(user => user.email === email);
+    let users = usersFromState;
+    // console.log("users", users);
     
+    if (!users || users.length === 0) {
+      users = await getUsers();
+      dispatch(setUsers(users)); 
+    }
+    const user = users.find(user => user.email === email);
+    // console.log("user", user);
     if(!user){
         return {success: false, message: "You are not registered yet!"};
     }
@@ -50,9 +55,10 @@ try{
    
     saveDataToStorage("profile", user);
     
-    dispatch(setProfile({ ...user, rememberMe }));
+    dispatch(setProfile({ ...user }));
     return {success: true, user};
 }catch(error){
+    console.error("Login error:", error);
     return {success: false, message: "Something went wrong!"}
 }
 }

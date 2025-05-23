@@ -24,14 +24,7 @@ const PostDetails = () => {
 
     if (!post) return <NotFound />;
 
-    const handleAuthorClick = () => {
-        dispatch(filterPosts({ filter: "author", userId: post.authorId, sortOrder: "newest" }));
-        navigation.navigate("ProfileNavigation", {
-            screen: "Profile",
-            params: { userId: post.authorId },
-        });
-    };
-
+    
     const handleEdit = () => setIsEditing(true);
     const handleClosePopup = () => setIsEditing(false);
     const handleDelete = () => {
@@ -49,7 +42,6 @@ const PostDetails = () => {
 
             <PostInfo
                 post={post}
-                onAuthorClick={handleAuthorClick}
                 showFullDescription={true}
             />
 
