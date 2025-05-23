@@ -36,24 +36,45 @@ function Feed() {
     //     dispatch(resetFilter());
     //     console.log("Resetting filter");
     // }, [dispatch, filter]);
-useFocusEffect(
-  useCallback(() => { 
-         console.log("Resetting filter when in Feed", route.params?.resetToAll);
+// useFocusEffect(
+//   useCallback(() => { 
+//          console.log("Resetting filter when in Feed", route.params?.resetToAll);
 
-    if (route.params?.resetToAll) {
+//     if (route.params?.resetToAll) {
 
-      dispatch(resetFilter());
-      dispatch(fetchPosts());
-      dispatch(filterPosts({
-        filter: "all",
-        sortOrder: "newest",
-        userId: user?.id
-      }));
+//       dispatch(resetFilter());
+//       dispatch(fetchPosts());
+//       dispatch(filterPosts({
+//         filter: "all",
+//         sortOrder: "newest",
+//         userId: user?.id
+//       }));
       
-      navigation.setParams({ resetToAll: false });
-    }
-  }, [dispatch, navigation, route.params?.resetToAll, user?.id])
+//       navigation.setParams({ resetToAll: false });
+//     }
+//   }, [dispatch, navigation, route.params?.resetToAll, user?.id])
+// );
+useFocusEffect(
+  useCallback(() => {
+    dispatch(resetFilter(() => {
+        console.log("Resetting filter");
+    }));
+    dispatch(fetchPosts({
+      filter: "all",
+      sortOrder: "newest",
+      userId: user?.id,
+    }));
+  }, [dispatch, user?.id])
 );
+// useEffect(() => {
+//   dispatch(fetchPosts({
+//     filter: "all",
+//     sortOrder: "newest",
+//     userId: user?.id,
+//   }));
+//   console.log("Fetching posts");
+// }, [dispatch, user?.id]);
+
     useEffect(() => {
         dispatch(fetchPosts());
         console.log("Fetching posts");
@@ -69,7 +90,7 @@ useFocusEffect(
     return (
         <View style={styles.container}>
             <Filters onFilterChange={handleFilterChange} />
-            <Posts posts={posts}/>
+            <Posts/>
         </View>
     );
 }

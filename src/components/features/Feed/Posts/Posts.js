@@ -27,6 +27,8 @@ function Posts() {
         flatListRef.current?.scrollToOffset({ animated: true, offset: 0 });
     };
     const renderPost = ({ item }) => <PostCard post={item} />;
+    console.log("Filter:", filter, "Posts count:", posts.length, "Filtered count:", filteredPosts.length);
+
     const data = filter === "all" ? posts : filteredPosts;
 
     return (

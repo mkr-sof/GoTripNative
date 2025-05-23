@@ -156,6 +156,7 @@ const postsSlice = createSlice({
 
         resetFilter: (state) => {
             state.filteredPosts = [...state.posts];
+            console.log("resetFilter called", state.filteredPosts.length, state.posts.length);
             state.filter = "all";
             state.filterUserId = null;
         },
@@ -173,19 +174,21 @@ export const {
     resetFilter
 } = postsSlice.actions;
 
-export const fetchPosts = () => async (dispatch, getState) => {
+export const fetchPosts = (filterOptions) => async (dispatch, getState) => {
     try {
         const data = await getAllPosts();
         dispatch(setPosts(data));
 
-        const { posts } = getState();
-        dispatch(filterPosts({
-            filter: posts.filter,
-            sortOrder: posts.sortOrder,
-            userId: posts.filterUserId,
-            category: posts.filterCategory,
-            query: posts.filterQuery,
-        }));
+        dispatch(filterPosts({...filterOptions}));
+
+        // const { posts } = getState();
+        // dispatch(filterPosts({
+        //     filter: posts.filter,
+        //     sortOrder: posts.sortOrder,
+        //     userId: posts.filterUserId,
+        //     category: posts.filterCategory,
+        //     query: posts.filterQuery,
+        // }));
     } catch (error) {
         console.error("Failed to fetch posts:", error);
     }
