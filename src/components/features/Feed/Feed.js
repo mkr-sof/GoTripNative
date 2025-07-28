@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import Posts from "./Posts/Posts";
 import CreatePost from "./CreatePost/CreatePost";
 import Filters from "../../common/Filters/Filters";
@@ -54,32 +54,37 @@ function Feed() {
 //     }
 //   }, [dispatch, navigation, route.params?.resetToAll, user?.id])
 // );
-useFocusEffect(
-  useCallback(() => {
-    dispatch(resetFilter(() => {
-        console.log("Resetting filter");
-    }));
-    dispatch(fetchPosts({
-      filter: "all",
-      sortOrder: "newest",
-      userId: user?.id,
-    }));
-  }, [dispatch, user?.id])
-);
-// useEffect(() => {
-//   dispatch(fetchPosts({
-//     filter: "all",
-//     sortOrder: "newest",
-//     userId: user?.id,
-//   }));
-//   console.log("Fetching posts");
-// }, [dispatch, user?.id]);
+// useFocusEffect(
+//   useCallback(() => {
+//     dispatch(resetFilter(() => {
+//         console.log("Resetting filter");
+//     }));
+//     dispatch(fetchPosts({
+//       filter: "all",
+//       sortOrder: "newest",
+//       userId: user?.id,
+//     }));
+//   }, [dispatch, user?.id])
+// );
 
-    useEffect(() => {
-        dispatch(fetchPosts());
-        console.log("Fetching posts");
-    }, [dispatch]);
+const isFocused = useIsFocused()
 
+console.log(isFocused,1111)
+useEffect(() => {
+    if(isFocused){
+        const data =  dispatch(fetchPosts({
+    filter: "all",
+    sortOrder: "newest",
+    userId: user?.id,
+  }));
+
+  console.log(data,9)
+    }
+ 
+  console.log("Fetching posts");
+}, [isFocused, user?.id]);
+
+   
     const handleFilterChange = () => {
         dispatch(filterPosts({
             filter, 

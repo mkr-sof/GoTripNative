@@ -1,11 +1,22 @@
 
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { View, Text, TouchableOpacity, FlatList, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 const categories = ["Adventure", "Nature", "City Trips", "Beach"];
 
 const CategoryListScreen = () => {
+    // const filter = useSelector((state) => state.posts.filter);
+    // const dispatch = useDispatch();
+    // useEffect(() => {
+    //    if(filter === "category"){
+
+    //    }else{
+
+    //    }
+        
+    // },[dispatch]);
     const navigation = useNavigation();
 
     const handlePress = (category) => {
